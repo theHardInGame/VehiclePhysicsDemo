@@ -1,13 +1,8 @@
 using UnityEngine;
 
-public class VehicleController : MonoBehaviour, IVehicleInput
+public sealed class VehicleController : MonoBehaviour, IVehicleInput
 {
     private InputManager inputManager;
-
-    [SerializeField] private VehicleModuleHandler vehicleModuleHandler;
-
-    [Header("Vehicle Module Configs")]
-    [SerializeField] private EngineConfig engineConfig;
 
     private void Awake()
     {

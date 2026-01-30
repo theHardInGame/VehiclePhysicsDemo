@@ -1,21 +1,19 @@
 using UnityEngine;
 
-public sealed class Engine : BaseVehicleModule<EngineConfig>, IDrivetrainModule
+internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainComponent
 {
-    public Engine(EngineConfig config) : base(config)
+    public Engine(EngineConfig config, ISimulationContext simContext) : base(config, simContext)
     {
         rpm = config.idleRPM;
     }
 
     private float rpm;
     private float loadTorque;
-    private float throttle;
     private float power;
 
-    public void SetThrottle(float t)
-    {
-        throttle = t;
-    }
+
+    private float Throttle => simContext.Inputs.GetThrottle();
+
 
     private float GetTorque()
     {
@@ -23,7 +21,7 @@ public sealed class Engine : BaseVehicleModule<EngineConfig>, IDrivetrainModule
 
         if (omega <= 0f) return 0f;
 
-        power = config.PowerCurve.Evaluate(rpm) * throttle;
+        power = config.PowerCurve.Evaluate(rpm) * Throttle;
         return power/omega;
     }
 
@@ -42,35 +40,35 @@ public sealed class Engine : BaseVehicleModule<EngineConfig>, IDrivetrainModule
         rpm = Mathf.Clamp(rpm, 0f, config.maxRPM);
     }
 
-    public override void OnFixedUpdate(float fixedDeltaTime)
+    private void RPMRecovery(float dt)
     {
-        base.OnFixedUpdate(fixedDeltaTime);
-        EngineCycle(fixedDeltaTime);
-
-        if (Mathf.Approximately(throttle, 0))
+        if (Mathf.Approximately(Throttle, 0))
         {
-            rpm = Mathf.MoveTowards(rpm, config.idleRPM, 10 * fixedDeltaTime);
+            rpm = Mathf.MoveTowards(rpm, config.idleRPM, 10 * dt);
         }
     }
 
-
-
+    #region Drivetrain Module Interface
     // ============================================
     // IDrivetrainModule Interface Implementation
     // ============================================
 
-    ForwardState IDrivetrainModule.Forward(ForwardState input)
+    public ForwardState Forward(ForwardState input, float tick)
     {
+        EngineCycle(tick);
+        RPMRecovery(tick);
+
         input.power = this.power;
         input.rpm = rpm;
         input.torque = GetTorque();
         return input;
     }
 
-    BackwardState IDrivetrainModule.Backward(BackwardState input)
+    public BackwardState Backward(BackwardState input, float tick)
     {
         loadTorque = input.loadTorque;
         rpm = input.rpm;
         return input;
     }
+    #endregion
 }

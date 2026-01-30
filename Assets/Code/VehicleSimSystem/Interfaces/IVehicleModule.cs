@@ -1,7 +1,7 @@
-public interface IVehicleModule
+internal interface IVehicleModule
 {
-    void OnUpdate(float deltaTime);
-    void OnFixedUpdate(float fixedDeltaTime);
-    void OnActivate();
-    void OnDeactivate();
+    void Update(float deltaTime);
+    void FixedUpdate(float fixedDeltaTime);
+    void Activate();
+    void Deactivate();
 }

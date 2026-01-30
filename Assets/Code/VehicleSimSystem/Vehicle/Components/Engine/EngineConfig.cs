@@ -1,7 +1,8 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EngineConfig", menuName = "Vehicle Modules/Drivetrain/Engine")]
-public sealed class EngineConfig : BaseModuleConfig
+//[CreateAssetMenu(fileName = "EngineConfig", menuName = "Vehicle Modules/Drivetrain/Engine")]
+[System.Serializable]
+public sealed class EngineConfig : BaseComponentConfig
 {
     [Tooltip("Power output as a function of RPM (0–1) \n X-axis: RPM x 1000 \n Y-axis: Power x 50")]
     public AnimationCurve PowerCurve;
