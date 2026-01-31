@@ -1,16 +1,35 @@
 internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainComponent
 {
-    public Clutch(ClutchConfig config, ISimulationContext simContext) : base(config, simContext)
+    internal Clutch(ClutchConfig config, ISimulationContext simContext) : base(config, simContext)
     {
     }
 
-    BackwardState IDrivetrainComponent.Backward(BackwardState input, float tick)
+    private bool isEngaged;
+
+    public BackwardState Backward(BackwardState input, float tick)
     {
+        float rpm = input.rpm;
+
+        if (rpm < config.AutoDisengageRPM) isEngaged = false;
+        else if (rpm > config.AutoDisengageRPM) isEngaged = true;
+
+        if (!isEngaged)
+        {
+            input.loadTorque = 0f;
+        }
+
         return input;
     }
 
-    ForwardState IDrivetrainComponent.Forward(ForwardState input, float tick)
+    public ForwardState Forward(ForwardState input, float tick)
     {
+        if (!isEngaged)
+        {
+            input.power = 0f;
+            input.torque = 0f;
+            input.rpm = 0f;
+        }
+
         return input;
     }
 }

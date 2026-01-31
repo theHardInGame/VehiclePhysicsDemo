@@ -1,7 +1,7 @@
 internal interface IVehicleModule
 {
-    void Update(float deltaTime);
-    void FixedUpdate(float fixedDeltaTime);
+    void Update(float dt);
+    void FixedUpdate(float fdt);
     void Activate();
     void Deactivate();
 }

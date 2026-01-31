@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public sealed class VehicleController : MonoBehaviour, IVehicleInput
+public sealed class VehicleController : MonoBehaviour
 {
     private InputManager inputManager;
 

@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public sealed class ClutchConfig : BaseComponentConfig
 {
+    [Tooltip("")]
     [Min(0f)]
-    public float reengageRPMMargin;
+    public float AutoDisengageRPM;
 }

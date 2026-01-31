@@ -2,7 +2,7 @@ using UnityEngine;
 
 internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainComponent
 {
-    public Engine(EngineConfig config, ISimulationContext simContext) : base(config, simContext)
+    internal Engine(EngineConfig config, ISimulationContext simContext) : base(config, simContext)
     {
         rpm = config.idleRPM;
     }

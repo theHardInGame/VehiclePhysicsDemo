@@ -10,18 +10,18 @@ internal abstract class BaseVehicleModule : IVehicleModule
         OnDeactivate();
     }
 
-    public void FixedUpdate(float fixedDeltaTime)
+    public void FixedUpdate(float fdt)
     {
-        OnFixedUpdate(fixedDeltaTime);
+        OnFixedUpdate(fdt);
     }
 
-    public void Update(float deltaTime)
+    public void Update(float dt)
     {
-        OnUpdate(deltaTime);
+        OnUpdate(dt);
     }
 
     protected abstract void OnActivate();
     protected abstract void OnDeactivate();
-    protected abstract void OnFixedUpdate(float fixedDeltaTime);
-    protected abstract void OnUpdate(float deltaTime);
+    protected abstract void OnFixedUpdate(float fdt);
+    protected abstract void OnUpdate(float dt);
 }
