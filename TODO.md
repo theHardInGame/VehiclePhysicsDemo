@@ -1,14 +1,18 @@
 # TODO
 
 > ## 30/01/2026
-1. [x] `01/01/2025` Create System and Module architecture.
-2. [x] `01/01/2025` Remove Update-FixedUpdate (And other Monobehaviour entries) from BaseModule, and move them to Systems.
-3. [x] `01/01/2025` ModuleHandler -> SystemHandler. Manage various System's runtime.
-4. [x] `01/01/2025` Restructure folders for new System-Module architecture.
+1. [x] `31/01/2026` Create System and Module architecture.
+2. [x] `31/01/2026` Remove Update-FixedUpdate (And other Monobehaviour entries) from BaseModule, and move them to Systems.
+3. [x] `31/01/2026` ModuleHandler -> SystemHandler. Manage various System's runtime.
+4. [x] `31/01/2026` Restructure folders for new System-Module architecture.
 
 > ## 31/01/2026
-1. [ ] Implement drivetrain module.
-2. [ ] Figure out Monobehaviour linking of module runtimes.
-3. [ ] List out required remaining modules and figure out implementation design.
+1. [x] `01/02/2026` Implement drivetrain module.
+2. [x] `01/02/2026` Figure out Monobehaviour linking of module runtimes.
+3. [ ] `ABORTED` List out required remaining modules and figure out implementation design.
 
 Ignore GameObject interaction for now. Deal with internal simulation first.
+
+> ## 01/02/2026
+1. [ ] Design Wheel component (for drivetrain).
+2. [ ] Design Simulation-Gameobject data exchanging.
