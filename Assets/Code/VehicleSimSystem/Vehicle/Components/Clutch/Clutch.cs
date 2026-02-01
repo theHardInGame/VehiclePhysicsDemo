@@ -1,6 +1,6 @@
 internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainComponent
 {
-    internal Clutch(ClutchConfig config, ISimulationContext simContext) : base(config, simContext)
+    internal Clutch(ClutchConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
     }
 

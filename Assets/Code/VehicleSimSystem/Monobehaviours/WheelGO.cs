@@ -5,7 +5,7 @@ using Unity.Collections;
 public sealed class WheelGO : MonoBehaviour
 {
     [SerializeField, ReadOnly] private string id;
-    public string ID => id;
+    public Guid ID { get; private set; }
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -22,7 +22,10 @@ public sealed class WheelGO : MonoBehaviour
     {
         if (string.IsNullOrEmpty(id))
         {
-            id = Guid.NewGuid().ToString();
+            Debug.LogError("Empty Guid");
+            return;
         }
+
+        if (Guid.TryParse(id, out Guid guid)) { ID = guid; }
     }
 }

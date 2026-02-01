@@ -2,7 +2,7 @@ using UnityEngine;
 
 internal sealed class Gearbox : BaseVehicleComponent<GearboxConfig>, IDrivetrainComponent
 {
-    internal Gearbox(GearboxConfig config, ISimulationContext simContext) : base(config, simContext)
+    internal Gearbox(GearboxConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
     }
 

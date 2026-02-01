@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 
 internal sealed class VehicleBuilder
 {
-    private ISimulationContext simContext;
+    private VehicleIOState vIOState;
 
-    internal VehicleBuilder(ISimulationContext simContext)
+    internal VehicleBuilder(VehicleIOState vIOState)
     {
-        this.simContext = simContext;
+        this.vIOState = vIOState;
     }
 
     internal Vehicle Build(VehicleConfig config)
@@ -18,15 +19,21 @@ internal sealed class VehicleBuilder
 
         var _components = new List<IVehicleComponent>();
 
-        Engine engine = new Engine(config.Engine, simContext);
-        Clutch clutch = new Clutch(config.Clutch, simContext);
-        Gearbox gearbox = new Gearbox(config.Gearbox, simContext);
-        Differetial differetial = new Differetial(config.Differential, simContext);
+        Engine engine = new Engine(config.Engine, vIOState);
+        Clutch clutch = new Clutch(config.Clutch, vIOState);
+        Gearbox gearbox = new Gearbox(config.Gearbox, vIOState);
+        Differetial differetial = new Differetial(config.Differential, vIOState);
 
         _components.Add(engine);
         _components.Add(clutch);
         _components.Add(gearbox);
         _components.Add(differetial);
+
+        for (int i = 0; i < config.Wheels.Length; i++)
+        {
+            _components.Add(new Wheel(config.Wheels[i], vIOState));
+        }
+
         #endregion
 
         #region Construct Modules

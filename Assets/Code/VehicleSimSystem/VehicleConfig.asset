@@ -12,5 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6852b2420e061702c929a8acc92674ab, type: 3}
   m_Name: VehicleConfig
   m_EditorClassIdentifier: Assembly-CSharp::VehicleConfig
-  Engine: {fileID: 0}
-  Clutch: {fileID: 0}
+  Name: Nissan 180SX
+  ID: 
+  Engine:
+    PowerCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    idleRPM: 1000
+    maxRPM: 7000
+    Friction: 0.13
+    Inertia: 0.254
+  Clutch:
+    AutoDisengageRPM: 750
+  Gearbox:
+    GearRatio: 7
+  Wheels:
+  - Name: 
+    ID: 
+    Powered: 0
+    Steered: 0

@@ -15,4 +15,4 @@ Ignore GameObject interaction for now. Deal with internal simulation first.
 
 > ## 01/02/2026
 1. [ ] Design Wheel component (for drivetrain).
-2. [ ] Design Simulation-Gameobject data exchanging.
+2. [x] `02/02/2026` Design Simulation-Gameobject data exchanging.

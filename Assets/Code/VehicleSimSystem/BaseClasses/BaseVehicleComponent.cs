@@ -2,11 +2,11 @@ internal abstract class BaseVehicleComponent<TConfig> : IVehicleComponent
 where TConfig : BaseComponentConfig
 {
     protected TConfig config;
-    protected ISimulationContext simContext;
+    protected VehicleIOState vIOState;
 
-    public BaseVehicleComponent(TConfig config, ISimulationContext simContext)
+    public BaseVehicleComponent(TConfig config, VehicleIOState vIOState)
     {
         this.config = config;
-        this.simContext = simContext;
+        this.vIOState = vIOState;
     }
 }

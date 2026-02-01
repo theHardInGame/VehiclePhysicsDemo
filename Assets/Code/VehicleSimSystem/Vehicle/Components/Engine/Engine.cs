@@ -2,7 +2,7 @@ using UnityEngine;
 
 internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainComponent
 {
-    internal Engine(EngineConfig config, ISimulationContext simContext) : base(config, simContext)
+    internal Engine(EngineConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
         rpm = config.idleRPM;
     }
@@ -12,7 +12,7 @@ internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainCo
     private float power;
 
 
-    private float Throttle => simContext.Inputs.GetThrottle();
+    private float Throttle => vIOState.vehicleCommands.GetThrottle();
 
 
     private float GetTorque()

@@ -1,6 +1,6 @@
 internal sealed class Differetial : BaseVehicleComponent<DifferentialConfig>, IDrivetrainComponent
 {
-    public Differetial(DifferentialConfig config, ISimulationContext simContext) : base(config, simContext)
+    public Differetial(DifferentialConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
     }
 

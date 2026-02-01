@@ -1,37 +1,66 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class VehicleController : MonoBehaviour
+internal sealed class VehicleController : MonoBehaviour
 {
-    private InputManager inputManager;
+    [SerializeField] private MonoBehaviour vehicleInputProvider;
+    [SerializeField] private VehicleConfig vehicleConfig;
+    [SerializeField] private WheelGO[] wheelGOs;
+
+
+    private IVehicleInputProvider vehicleIP;
+    private Vehicle vehicle;
+    private VehicleCommands vehicleCommands;
+    private VehicleIOState vehicleIOState;
+
+    private Dictionary<Guid, WheelInputState> wheelInputs;
+    private Dictionary<Guid, WheelOutputState> wheelOutputs;
 
     private void Awake()
     {
-        inputManager = InputManager.Instance;
+        if (vehicleInputProvider is IVehicleInputProvider vip)
+        {
+            vehicleIP = vip;
+        }
+        else
+        {
+            Debug.LogError($"{vehicleInputProvider.name} does not inherit IVehicleInputProvider!");
+        }
+
+        CreateWheelIODictionaries();
+
+        vehicleCommands = new();
+        vehicleIOState = new VehicleIOState(wheelInputs, wheelOutputs, vehicleCommands);
     }
 
-    private void OnEnable()
+    private void FixedUpdate()
     {
-        inputManager.OnAccelerate += OnThrottleInput;
-        inputManager.OnBrake += OnBrakeInput;
-        inputManager.OnSteer += OnSteerInput;
+        SetVehicleCommands();
     }
 
-    public float Throttle { get; private set; }
-    public float Brake { get; private set; }
-    public float Steer { get; private set; }
-
-    private void OnThrottleInput(float throttle)
+    private void CreateWheelIODictionaries()
     {
-        Throttle = throttle;
+        if (wheelGOs.Length != vehicleConfig.Wheels.Length)
+        {
+            Debug.LogError("The amount of WheelGO and Wheels in VehicleConfig does not match.");
+            return;
+        }
+
+        wheelInputs = new();
+        wheelOutputs = new();
+
+        for (int i = 0; i < wheelGOs.Length; i++)
+        {
+            wheelInputs.Add(wheelGOs[i].ID, new WheelInputState());
+            wheelOutputs.Add(wheelGOs[i].ID, new WheelOutputState());
+        }
     }
 
-    private void OnSteerInput(float steer)
+    private void SetVehicleCommands()
     {
-        Brake = steer;
-    }
-
-    private void OnBrakeInput(float brake)
-    {
-        Steer = brake;
+        vehicleCommands.SetThrottle(vehicleIP.Throttle);
+        vehicleCommands.SetBrake(vehicleIP.Brake);
+        vehicleCommands.SetSteering(vehicleIP.Steer);
     }
 }

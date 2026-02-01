@@ -1,4 +1,4 @@
-internal sealed class VehicleInputs
+internal sealed class VehicleCommands
 {
     private float throttle;
     private float brake;
