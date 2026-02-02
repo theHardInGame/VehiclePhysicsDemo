@@ -11,8 +11,8 @@ internal sealed class VehicleController : MonoBehaviour
 
     private IVehicleInputProvider vehicleIP;
     private Vehicle vehicle;
-    private VehicleCommands vehicleCommands;
-    private VehicleIOState vehicleIOState;
+    private VehicleSimulationContext vehicleCommands;
+    private VehicleIOState vIOS;
 
     private Dictionary<Guid, WheelInputState> wheelInputs;
     private Dictionary<Guid, WheelOutputState> wheelOutputs;
@@ -31,19 +31,22 @@ internal sealed class VehicleController : MonoBehaviour
         CreateWheelIODictionaries();
 
         vehicleCommands = new();
-        vehicleIOState = new VehicleIOState(wheelInputs, wheelOutputs, vehicleCommands);
+        vIOS = new VehicleIOState(wheelInputs, wheelOutputs, vehicleCommands);
     }
 
     private void FixedUpdate()
     {
         SetVehicleCommands();
+        vehicle.FixedUpdate(Time.fixedDeltaTime);
     }
 
     private void CreateWheelIODictionaries()
     {
         if (wheelGOs.Length != vehicleConfig.Wheels.Length)
         {
-            Debug.LogError("The amount of WheelGO and Wheels in VehicleConfig does not match.");
+            Debug.LogError($"The amount of WheelGO and Wheels in VehicleConfig does not match. \n Disabling VehicleController... \n Name: { vehicleConfig.Name } \n ID: { vehicleConfig.ID }", this);
+            
+            enabled = false;
             return;
         }
 
@@ -52,8 +55,9 @@ internal sealed class VehicleController : MonoBehaviour
 
         for (int i = 0; i < wheelGOs.Length; i++)
         {
-            wheelInputs.Add(wheelGOs[i].ID, new WheelInputState());
-            wheelOutputs.Add(wheelGOs[i].ID, new WheelOutputState());
+            WheelGO wheelGO = wheelGOs[i];
+            wheelInputs.Add(wheelGO.ID, wheelGO.WheelIPS);
+            wheelOutputs.Add(wheelGO.ID, wheelGO.WheelOPS);
         }
     }
 

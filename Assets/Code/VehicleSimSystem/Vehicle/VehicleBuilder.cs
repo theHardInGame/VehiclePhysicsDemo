@@ -1,13 +1,14 @@
 using System.Collections.Generic;
-using System.Linq;
 
 internal sealed class VehicleBuilder
 {
     private VehicleIOState vIOState;
+    private WheelModulePort wheelModulePort;
 
-    internal VehicleBuilder(VehicleIOState vIOState)
+    internal VehicleBuilder(VehicleIOState vIOState, WheelModulePort wheelModulePort)
     {
         this.vIOState = vIOState;
+        this.wheelModulePort = wheelModulePort;
     }
 
     internal Vehicle Build(VehicleConfig config)
@@ -31,7 +32,7 @@ internal sealed class VehicleBuilder
 
         for (int i = 0; i < config.Wheels.Length; i++)
         {
-            _components.Add(new Wheel(config.Wheels[i], vIOState));
+            _components.Add(new Wheel(config.Wheels[i], vIOState, wheelModulePort));
         }
 
         #endregion
@@ -43,7 +44,7 @@ internal sealed class VehicleBuilder
 
         var _modules = new List<IVehicleModule>();
 
-        var drivetrain = new DrivetrainModule(new IDrivetrainComponent[]
+        var drivetrain = new DrivetrainModule(wheelModulePort, new IDrivetrainComponent[]
         {
             engine,
             clutch,

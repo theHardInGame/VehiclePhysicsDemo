@@ -1,5 +1,12 @@
 internal abstract class BaseVehicleModule : IVehicleModule
 {
+    IModulePort modulePort;
+
+    public BaseVehicleModule(IModulePort modulePort)
+    {
+        this.modulePort = modulePort;
+    }
+
     public void Activate()
     {
         OnActivate();

@@ -12,7 +12,7 @@ internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainCo
     private float power;
 
 
-    private float Throttle => vIOState.vehicleCommands.GetThrottle();
+    private float Throttle => vIOState.vSimCtx.GetThrottle();
 
 
     private float GetTorque()

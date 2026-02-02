@@ -2,7 +2,7 @@ internal sealed class DrivetrainModule : BaseVehicleModule
 {
     private bool isActive ;
     private IDrivetrainComponent[] _drivetrainComponents;
-    internal DrivetrainModule(IDrivetrainComponent[] drivetrainComponents)
+    public DrivetrainModule(IModulePort modulePort, IDrivetrainComponent[] drivetrainComponents) : base(modulePort)
     {
         _drivetrainComponents = drivetrainComponents;
     }

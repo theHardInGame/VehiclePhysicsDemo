@@ -1,26 +1,37 @@
 using System;
 
-internal sealed class Wheel : BaseVehicleComponent<WheelConfig>, IDrivetrainComponent
+internal sealed class Wheel : BaseVehicleComponent<WheelConfig>
 {
-    public Wheel(WheelConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    public Wheel(WheelConfig config, VehicleIOState vIOState, IWheelPort wheelPort) : base(config, vIOState)
     {
-        Guid ID;
-        bool b = Guid.TryParse(config.ID, out ID);
+        if (!Guid.TryParse(config.ID, out Guid id))
+        {
+            throw new InvalidOperationException($"Invalid WheelConfig ID '{config.ID}' in {config.Name}");
+        }
+        
+        wheelIPS = vIOState.GetWheelInputState(id);
+        wheelOPS = vIOState.GetWheelOutputState(id);
 
-        wheelIPS = vIOState.GetWheelInputState(ID);
-        wheelOPS = vIOState.GetWheelOutputState(ID);
+        this.wheelPort = wheelPort;
     }
 
     WheelInputState wheelIPS;
     WheelOutputState wheelOPS;
+    IWheelPort wheelPort;
+
+    #region Drivetrain Interface Implementation
+    // =====================================
+    // Drivetrain Interface Implementation
+    // =====================================
 
     public ForwardState Forward(ForwardState input, float tick)
     {
-        return input;    
+        return input;
     }
 
     public BackwardState Backward(BackwardState input, float tick)
     {
         return input;
     }
+    #endregion
 }

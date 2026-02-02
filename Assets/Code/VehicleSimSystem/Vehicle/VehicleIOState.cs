@@ -6,13 +6,13 @@ internal sealed class VehicleIOState
     private Dictionary<Guid, WheelInputState> WheelInputs;
     private Dictionary<Guid, WheelOutputState> WheelOutputs;
 
-    public VehicleCommands vehicleCommands;
+    public VehicleSimulationContext vSimCtx;
 
-    internal VehicleIOState(Dictionary<Guid, WheelInputState> WheelInputs, Dictionary<Guid, WheelOutputState> WheelOutput, VehicleCommands vehicleCommands)
+    internal VehicleIOState(Dictionary<Guid, WheelInputState> WheelInputs, Dictionary<Guid, WheelOutputState> WheelOutputs, VehicleSimulationContext vSimCtx)
     {
         this.WheelInputs = WheelInputs;
-        this.WheelOutputs = WheelOutput;
-        this.vehicleCommands = vehicleCommands;
+        this.WheelOutputs = WheelOutputs;
+        this.vSimCtx = vSimCtx;
     }
 
     public WheelInputState GetWheelInputState(Guid ID)

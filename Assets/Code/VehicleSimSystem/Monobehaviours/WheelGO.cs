@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using Unity.Collections;
 
-public sealed class WheelGO : MonoBehaviour
+internal sealed class WheelGO : MonoBehaviour
 {
     [SerializeField, ReadOnly] private string id;
     public Guid ID { get; private set; }
@@ -17,6 +17,27 @@ public sealed class WheelGO : MonoBehaviour
         }
     }
 #endif
+
+    public WheelInputState WheelIPS
+    {
+        get
+        {
+            wheelIPDNT ??= new();
+            return wheelIPDNT;
+        }
+    }
+
+    public WheelOutputState WheelOPS
+    {
+        get
+        {
+            wheelOPDNT ??= new();
+            return wheelOPDNT;
+        }
+    }
+
+    private WheelInputState wheelIPDNT;
+    private WheelOutputState wheelOPDNT;
 
     private void Awake()
     {
