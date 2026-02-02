@@ -17,4 +17,7 @@ Ignore GameObject interaction for now. Deal with internal simulation first.
 1. [ ] `ABORTED` Design Wheel component (for drivetrain).
 2. [x] `02/02/2026` Design Simulation-Gameobject data exchanging.
 
-
+> ## 03/02/2026
+1. [ ] Design Suspension around new WheelModulePort design.
+2. [ ] Complete Drivetrain and Suspension modules.
+3. [ ] Complete Wheel.
