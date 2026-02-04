@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VehicleConfig
   Name: Nissan 180SX
   ID: 
+  Commands:
+    MaxThrottleRate: 0
+    MaxSteerRate: 0
   Engine:
     PowerCurve:
       serializedVersion: 2
@@ -29,6 +32,11 @@ MonoBehaviour:
     AutoDisengageRPM: 750
   Gearbox:
     GearRatio: 7
+  Differential:
+    MaxDifferentialTorque: 0
+    LSDSlipRPM: 0
+    LSDResponseCurve: 0
+    LSDTorqueBias: 1
   Wheels:
   - Name: 
     ID: 

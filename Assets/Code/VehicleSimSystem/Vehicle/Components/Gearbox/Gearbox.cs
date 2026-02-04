@@ -6,16 +6,16 @@ internal sealed class Gearbox : BaseVehicleComponent<GearboxConfig>, IDrivetrain
     {
     }
 
-    public BackwardState Backward(BackwardState input, float tick)
+    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
     {
-        float power = 2 * input.rpm * Mathf.PI * input.loadTorque / 60;
-        input.rpm *= config.GearRatio;
-        input.loadTorque = power * 60 / (input.rpm  * 2 * Mathf.PI);
+        float power = 2 * input.feedbackRPM * Mathf.PI * input.feedbackTorque / 60;
+        input.feedbackRPM *= config.GearRatio;
+        input.feedbackTorque = power * 60 / (input.feedbackRPM  * 2 * Mathf.PI);
 
         return input;
     }
 
-    public ForwardState Forward(ForwardState input, float tick)
+    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
     {
         input.rpm /= config.GearRatio;
         input.torque = input.power * 60 / (input.rpm * 2 * Mathf.PI);

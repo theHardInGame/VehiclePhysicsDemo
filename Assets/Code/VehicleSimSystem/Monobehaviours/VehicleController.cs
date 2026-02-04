@@ -11,8 +11,9 @@ internal sealed class VehicleController : MonoBehaviour
 
     private IVehicleInputProvider vehicleIP;
     private Vehicle vehicle;
-    private VehicleSimulationContext vehicleCommands;
+    private VehicleSimulationContext vSimCtx;
     private VehicleIOState vIOS;
+    private WheelModulePort wheelModulePort;
 
     private Dictionary<Guid, WheelInputState> wheelInputs;
     private Dictionary<Guid, WheelOutputState> wheelOutputs;
@@ -30,8 +31,12 @@ internal sealed class VehicleController : MonoBehaviour
 
         CreateWheelIODictionaries();
 
-        vehicleCommands = new();
-        vIOS = new VehicleIOState(wheelInputs, wheelOutputs, vehicleCommands);
+        vSimCtx = new();
+        vIOS = new VehicleIOState(wheelInputs, wheelOutputs, vSimCtx);
+        wheelModulePort = new(vehicleConfig.Wheels.Length);
+
+        VehicleBuilder builder = new VehicleBuilder(vIOS, wheelModulePort);
+        vehicle = builder.Build(vehicleConfig);
     }
 
     private void FixedUpdate()
@@ -63,8 +68,8 @@ internal sealed class VehicleController : MonoBehaviour
 
     private void SetVehicleCommands()
     {
-        vehicleCommands.SetThrottle(vehicleIP.Throttle);
-        vehicleCommands.SetBrake(vehicleIP.Brake);
-        vehicleCommands.SetSteering(vehicleIP.Steer);
+        vSimCtx.SetThrottle(vehicleIP.Throttle);
+        vSimCtx.SetBrake(vehicleIP.Brake);
+        vSimCtx.SetSteering(vehicleIP.Steer);
     }
 }

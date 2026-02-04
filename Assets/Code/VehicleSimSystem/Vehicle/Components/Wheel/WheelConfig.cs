@@ -14,4 +14,8 @@ public sealed class WheelConfig : BaseComponentConfig
 
     [Tooltip("Is this wheel steerable?")]
     public bool Steered;
+
+    public float Radius;
+
+    public SuspensionConfig Suspension;
 }

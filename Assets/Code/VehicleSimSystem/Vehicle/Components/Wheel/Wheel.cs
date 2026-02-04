@@ -13,6 +13,8 @@ internal sealed class Wheel : BaseVehicleComponent<WheelConfig>
         wheelOPS = vIOState.GetWheelOutputState(id);
 
         this.wheelPort = wheelPort;
+
+        wheelPort.RegisterWheel(id, config.Powered, config.Steered, config.Radius);
     }
 
     WheelInputState wheelIPS;
@@ -24,12 +26,12 @@ internal sealed class Wheel : BaseVehicleComponent<WheelConfig>
     // Drivetrain Interface Implementation
     // =====================================
 
-    public ForwardState Forward(ForwardState input, float tick)
+    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
     {
         return input;
     }
 
-    public BackwardState Backward(BackwardState input, float tick)
+    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
     {
         return input;
     }

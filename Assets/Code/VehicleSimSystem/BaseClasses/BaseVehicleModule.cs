@@ -1,6 +1,6 @@
 internal abstract class BaseVehicleModule : IVehicleModule
 {
-    IModulePort modulePort;
+    protected IModulePort modulePort;
 
     public BaseVehicleModule(IModulePort modulePort)
     {

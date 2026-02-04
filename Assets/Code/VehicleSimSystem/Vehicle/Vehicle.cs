@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 internal sealed class Vehicle
 {
@@ -29,10 +30,10 @@ internal sealed class Vehicle
 
     internal void FixedUpdate(float fdt)
     {
-        foreach (var module in modules)
+        Parallel.ForEach(modules, module =>
         {
             module.FixedUpdate(fdt);
-        }
+        });
     }
 
     internal void Update(float dt)

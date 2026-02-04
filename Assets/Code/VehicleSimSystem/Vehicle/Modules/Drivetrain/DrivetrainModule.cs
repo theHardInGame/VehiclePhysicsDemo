@@ -1,10 +1,32 @@
 internal sealed class DrivetrainModule : BaseVehicleModule
 {
     private bool isActive ;
-    private IDrivetrainComponent[] _drivetrainComponents;
-    public DrivetrainModule(IModulePort modulePort, IDrivetrainComponent[] drivetrainComponents) : base(modulePort)
+    private IDrivetrainComponent[] drivetrainComponents;
+    private IJunctionComponent<DifferentialForwardState, DifferentialBackwardState> junctionComponent;
+
+    private readonly int[] poweredWheel;
+    private readonly int poweredWheelCount;
+    private DifferentialBackwardState dbstate;
+    private DifferentialForwardState dfstate;
+
+    private DrivetrainBackwardState bstate;
+    private DrivetrainForwardState fstate;
+
+    public DrivetrainModule(IModulePort modulePort, IJunctionComponent<DifferentialForwardState, DifferentialBackwardState> junctionComponent, IDrivetrainComponent[] drivetrainComponents) : base(modulePort)
     {
-        _drivetrainComponents = drivetrainComponents;
+        this.drivetrainComponents = drivetrainComponents;
+        this.junctionComponent = junctionComponent;
+
+        poweredWheel = modulePort.GetPoweredWheels();
+        poweredWheelCount = poweredWheel.Length;
+
+        dbstate = new();
+        dbstate.feedbackRPMs = new float[poweredWheelCount];
+        dbstate.feedbackTorques = new float[poweredWheelCount];
+
+        dbstate = new();
+        dfstate.wheelRPMs = new float[poweredWheelCount];
+        dfstate.wheelTorques = new float[poweredWheelCount];
     }
 
     protected override void OnActivate()
@@ -20,19 +42,37 @@ internal sealed class DrivetrainModule : BaseVehicleModule
     protected override void OnFixedUpdate(float fdt)
     {
         if (!isActive) return;
-        
-        ForwardState fstate = new();
 
-        for (int i = 0; i < _drivetrainComponents.Length; i++)
+        bstate = new();
+
+        for (int i = 0; i < poweredWheelCount; i++)
         {
-            fstate = _drivetrainComponents[i].Forward(fstate, fdt);
+            dbstate.feedbackRPMs[i] = modulePort.GetFeedbackRPM(poweredWheel[i]);
+            dbstate.feedbackTorques[i] = modulePort.GetFeedbackTorque(poweredWheel[i]);
         }
 
-        BackwardState bstate = new();
+        bstate = junctionComponent.Backward(dbstate, fdt).backward;
 
-        for (int i = _drivetrainComponents.Length - 1; i >= 0; i--)
+        for (int i = drivetrainComponents.Length - 1; i >= 0; i--)
         {
-            bstate = _drivetrainComponents[i].Backward(bstate, fdt);
+            bstate = drivetrainComponents[i].Backward(bstate, fdt);
+        }
+
+        fstate = new();
+
+        for (int i = 0; i < drivetrainComponents.Length; i++)
+        {
+            fstate = drivetrainComponents[i].Forward(fstate, fdt);
+        }
+
+        dfstate.forward = fstate;
+
+        dfstate = junctionComponent.Forward(dfstate, fdt);
+
+        for (int i = 0; i < poweredWheelCount; i++)
+        {
+            modulePort.SetDrivetrainRPM(poweredWheel[i], dfstate.wheelRPMs[i]);
+            modulePort.SetDrivetrainTorque(poweredWheel[i], dfstate.wheelTorques[i]);
         }
     }
 

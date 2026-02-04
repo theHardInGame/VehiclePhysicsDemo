@@ -44,12 +44,11 @@ internal sealed class VehicleBuilder
 
         var _modules = new List<IVehicleModule>();
 
-        var drivetrain = new DrivetrainModule(wheelModulePort, new IDrivetrainComponent[]
+        var drivetrain = new DrivetrainModule(wheelModulePort, differetial, new IDrivetrainComponent[]
         {
             engine,
             clutch,
             gearbox,
-            differetial
         });
 
         _modules.Add(drivetrain);

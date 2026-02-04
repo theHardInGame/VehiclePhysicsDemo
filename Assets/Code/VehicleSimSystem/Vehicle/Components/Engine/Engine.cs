@@ -53,7 +53,7 @@ internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainCo
     // IDrivetrainModule Interface Implementation
     // ============================================
 
-    public ForwardState Forward(ForwardState input, float tick)
+    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
     {
         EngineCycle(tick);
         RPMRecovery(tick);
@@ -64,10 +64,10 @@ internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainCo
         return input;
     }
 
-    public BackwardState Backward(BackwardState input, float tick)
+    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
     {
-        loadTorque = input.loadTorque;
-        rpm = input.rpm;
+        loadTorque = input.feedbackTorque;
+        rpm = input.feedbackRPM;
         return input;
     }
     #endregion

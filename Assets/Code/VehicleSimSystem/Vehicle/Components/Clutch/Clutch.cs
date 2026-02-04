@@ -6,22 +6,22 @@ internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainCo
 
     private bool isEngaged;
 
-    public BackwardState Backward(BackwardState input, float tick)
+    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
     {
-        float rpm = input.rpm;
+        float rpm = input.feedbackRPM;
 
         if (rpm < config.AutoDisengageRPM) isEngaged = false;
         else if (rpm > config.AutoDisengageRPM) isEngaged = true;
 
         if (!isEngaged)
         {
-            input.loadTorque = 0f;
+            input.feedbackTorque = 0f;
         }
 
         return input;
     }
 
-    public ForwardState Forward(ForwardState input, float tick)
+    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
     {
         if (!isEngaged)
         {

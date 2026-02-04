@@ -26,9 +26,12 @@ internal sealed class VehicleSimulationContext
     // Static States
     // ===============
 
+    private float gravity;
     private float mass;
     internal float GetMass() => mass;
+    internal float GetGravity() => gravity;
     internal void SetMass(float mass) { this.mass = mass; }
+    internal void SetGravity(float gravity) { this.gravity = gravity; }
     #endregion
 
 
