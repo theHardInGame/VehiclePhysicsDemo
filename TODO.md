@@ -22,3 +22,10 @@ Ignore GameObject interaction for now. Deal with internal simulation first.
 2. [x] `03/02/2026` Complete Drivetrain modules.
 3. [x] `04/02/2026` Complete Suspension module.
 4. [ ] Complete Wheel.
+
+> ## 04/02/2026
+1. [ ] Implement Unity side implementation for testing.
+2. [ ] Convert helpers to static methods.
+3. [ ] Implement Steering.
+4. [ ] Decide where Brakes live and then implement.
+5. [ ] Implemen smooth input handling in `VehicleController`.
