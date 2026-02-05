@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using UnityEngine;
 
 internal sealed class SuspensionSystem : BaseVehicleModule
 {
@@ -17,11 +16,12 @@ internal sealed class SuspensionSystem : BaseVehicleModule
         this.suspensions = suspensions;
 
         suspensionCount = modulePort.GetWheelCount();
-        vbInput.suspensionCount = suspensionCount;
-        
+        body.suspensionCount = suspensionCount;
+
         for (int i = 0; i < suspensionCount; i++)
         {
             suspensions[i].ID = i;
+            suspensions[i].vectorFromCG = body.vectorsToSuspension[i] = modulePort.GetLocalPos(i) - body.localCG;
         }
     }
     
@@ -37,32 +37,31 @@ internal sealed class SuspensionSystem : BaseVehicleModule
 
     protected override void OnFixedUpdate(float fdt)
     {
+        vbOutput = body.DistributeLoad(vbInput);
+
         Parallel.ForEach(suspensions, suspension =>
         {
             int ID = suspension.ID;
-            SuspensionInputData suspensionInput = new();
-            suspensionInput.raycastLength = modulePort.GetRaycastLength(ID);
-            suspensionInput.wheelRadius = modulePort.GetRadius(ID);
-            suspensionInput.verticalLoad = this.vbOutput.loadPerSuspension[ID];
+            SuspensionInputData suspensionInput = new()
+            {
+                raycastLength = modulePort.GetRaycastLength(ID),
+                raycastNormal = modulePort.GetRaycastNormal(ID),
+                wheelRadius = modulePort.GetRadius(ID),
+                staticNormalForce = vbOutput.staticLoadPerSuspension[ID]
+            };
 
             SuspensionOutputData suspensionOutput = new();
             suspensionOutput = suspension.Simulate(suspensionInput, fdt);
 
             vbInput.isGrounded[ID] = suspensionOutput.isGrounded;
             vbInput.springRates[ID] = suspensionOutput.springRate;
+            vbInput.maxCompressed[ID] = suspensionOutput.maxCompressed;
+            vbInput.suspensionNormals[ID] = modulePort.GetRaycastNormal(ID);
 
-            modulePort.SetSuspensionNormalLoad(ID, suspensionOutput.verticalLoad);
+            modulePort.SetSuspensionNormalForce(ID, suspensionOutput.normalForce);
             modulePort.SetSuspensionForce(ID, suspensionOutput.suspensionForce);
             modulePort.SetVerticalWheelDisplacement(ID, suspensionOutput.verticalWheelDisplacement);
         });
-
-        for (int i = 0; i < suspensionCount; i++)
-        {
-            vbInput.suspensionLocalPositions[i] = modulePort.GetLocalPos(i);
-        }
-
-        vbOutput = body.DistributeLoad(vbInput);
-        
     }
 
     protected override void OnUpdate(float dt)

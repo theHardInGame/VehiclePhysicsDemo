@@ -17,6 +17,8 @@ internal sealed class WheelSimulationParamters
     public float feedbackRPM;
     public Vector3 localPos;
     public float raycastLength;
+    public Vector3 raycastNormal;
+    public Vector3 raycastTangent;
 
 
     public float suspensionNormalLoad;

@@ -5,38 +5,55 @@ internal sealed class VehicleBody : BaseVehicleComponent<VehicleBodyConfig>
 {
     public VehicleBody(VehicleBodyConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
-        totalWeight = vIOState.vSimCtx.GetMass() * vIOState.vSimCtx.GetGravity();
-        localCG = vIOState.vSimCtx.GetCGLocal();
+        F_external = vSimCtx.GetMass() * vSimCtx.GetGravity();
 
-        B = new float[,]
-        {
-            { totalWeight },
-            { 0f },
-            { 0f }
-        };
+        localCG = vSimCtx.GetCGLocal();
     }
 
-    private Vector3 localCG;
-    private float totalWeight;
-    private readonly float[,] B;
+    public Vector3[] vectorsToSuspension;
+    public int suspensionCount;
+    public readonly Vector3 localCG;
+    private Vector3 F_external;
+    private float[,] B;
 
     public VehicleBodyOutput DistributeLoad(VehicleBodyInput input)
     {
-        float[,] A = new float[3, input.suspensionCount];
-        float[] K = new float[input.suspensionCount];
+        float[,] A = new float[3, suspensionCount];
+        float[] K = new float[suspensionCount];
 
-        for (int i = 0; i < input.suspensionLocalPositions.Length; i++)
+        float F_normal_total = 0f;
+
+        for (int i = 0; i < suspensionCount; i++)
         {
-            Vector3 r = input.suspensionLocalPositions[i] - localCG;
-            float M_x = r.Z * totalWeight;
-            float M_z = r.X * totalWeight;
+            if (!input.isGrounded[i]) continue;
+            F_normal_total += Vector3.Dot(F_external, input.suspensionNormals[i]);
+        }
+
+        float torqueRoll = 0f;
+        float torquePitch = 0f;
+
+        for (int i = 0; i < suspensionCount; i++)
+        {
+            Vector3 r = vectorsToSuspension[i];
+            float F_i = Vector3.Dot(F_external, input.suspensionNormals[i]);
+            Vector3 torque = Vector3.Cross(r, F_i * input.suspensionNormals[i]);
+
+            torqueRoll  += torque.X;
+            torquePitch += torque.Z;
 
             A[0,i] = 1f;
-            A[1,i] = M_z;
-            A[2,i] = M_x;
+            A[1,i] = r.Z;
+            A[2,i] = r.X;
 
-            K[i] = input.isGrounded[i] ? input.springRates[i] : 0f;
+            K[i] = input.isGrounded[i] ? input.springRates[i] * (input.maxCompressed[i] ? 10000f : 1f) : 0f;
         }
+
+        B = new float[,]
+        {
+            { F_normal_total },
+            { torqueRoll },
+            { torquePitch },
+        };
 
         float[,] AK = MultiplyDiagonal(A, K);
 
@@ -52,10 +69,11 @@ internal sealed class VehicleBody : BaseVehicleComponent<VehicleBodyConfig>
         // 5. Multiply by K (diagonal) to get F
         float[] F = MultiplyDiagonalVector(K, Flatten(AT_AKATInv_B));
 
-        VehicleBodyOutput output = new();
-        output.loadPerSuspension = F;
 
-        return output;
+        return new VehicleBodyOutput
+        {
+            staticLoadPerSuspension = F
+        };
     }
 
     private static float[,] Multiply(float[,] A, float[,] B)
@@ -142,13 +160,13 @@ internal sealed class VehicleBody : BaseVehicleComponent<VehicleBodyConfig>
 
 internal struct VehicleBodyInput
 {
-    public Vector3[] suspensionLocalPositions;
+    public Vector3[] suspensionNormals;
     public float[] springRates;
     public bool[] isGrounded;
-    public int suspensionCount;
+    public bool[] maxCompressed;
 }
 
 internal struct VehicleBodyOutput
 {
-    public float[] loadPerSuspension;
+    public float[] staticLoadPerSuspension;
 }

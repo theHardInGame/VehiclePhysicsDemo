@@ -118,6 +118,16 @@ internal sealed class WheelModulePort : IModulePort, IWheelPort
         return wheels[ID].localPos;
     }
 
+    public Vector3 GetRaycastNormal(int ID)
+    {
+        return wheels[ID].raycastNormal;
+    }
+
+    public Vector3 GetRaycastTangent(int ID)
+    {
+        return wheels[ID].raycastTangent;
+    }
+
     public float GetRadius(int ID)
     {
         return wheels[ID].radius;
@@ -138,7 +148,7 @@ internal sealed class WheelModulePort : IModulePort, IWheelPort
         wheels[ID].drivetrainRPM = rpm;
     }
 
-    public void SetSuspensionNormalLoad(int ID, float normalLoad)
+    public void SetSuspensionNormalForce(int ID, float normalLoad)
     {
         wheels[ID].suspensionNormalLoad = normalLoad;
     }

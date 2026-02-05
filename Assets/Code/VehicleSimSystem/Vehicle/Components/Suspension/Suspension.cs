@@ -1,16 +1,19 @@
 using System;
+using System.Numerics;
 
 internal sealed class Suspension : BaseVehicleComponent<SuspensionConfig>
 {
     public Suspension(SuspensionConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
         currentLength = config.RestLength;
-        gravity = vIOState.vSimCtx.GetGravity();
+
+        gravity = vSimCtx.GetGravity();
     }
 
     public int ID;
 
-    private float gravity;
+    private Vector3 gravity;
+    public Vector3 vectorFromCG;
 
     private float currentLength;
     private float lastFrameLength;
@@ -20,64 +23,101 @@ internal sealed class Suspension : BaseVehicleComponent<SuspensionConfig>
     private bool isGrounded;
     private float springForce;
     private float damperForce;
-    private float verticalLoad;
+    private float normalForce;
 
     private float verticalWheelVelocity;
     
 
     public SuspensionOutputData Simulate(SuspensionInputData input, float dt)
     {
-        isGrounded = MathF.Abs(input.raycastLength - currentLength - input.wheelRadius) < 0.0001f; 
+        float normalGravity = Vector3.Dot(gravity, input.raycastNormal);
+
+        isGrounded = (currentLength + input.wheelRadius) >= input.raycastLength - 0.002f;
 
         if ((currentLength + input.wheelRadius) > input.raycastLength || isGrounded)
         {
             currentLength = input.raycastLength - input.wheelRadius;
         }
         
-        currentVelocity = (currentLength - lastFrameLength) / dt;
+        bool maxCompressed = currentLength <= config.MinLength;
+        bool maxDrooped = currentLength >= config.MaxLength;
+
+        currentLength = Math.Clamp(currentLength, config.MinLength, config.MaxLength);
+
+        currentVelocity = maxCompressed || maxDrooped ? 0f : (currentLength - lastFrameLength) / dt;
         float acceleration = (currentVelocity - lastFrameVelocity) / dt;
 
         springForce = (config.RestLength - currentLength) * config.SpringRate;
         damperForce = -(currentVelocity * config.DamperRate);
 
+        float suspensionForce = springForce + damperForce;
+
         if (isGrounded)
         {
-            verticalLoad = (config.WheelMass * acceleration) + input.verticalLoad + damperForce + springForce;   
+            if (maxCompressed) 
+            {
+                Vector3 alpha = vSimCtx.GetAngularAcceleration();
+                Vector3 omega = vSimCtx.GetAngularVelocity();
+                Vector3 a_cm  = vSimCtx.GetLinearAcceleartion();
+
+                Vector3 a_point =
+                    a_cm +
+                    Vector3.Cross(alpha, vectorFromCG) +
+                    Vector3.Cross(omega, Vector3.Cross(omega, vectorFromCG));
+
+                float imposedNormalAcc = Vector3.Dot(a_point, input.raycastNormal);
+
+                normalForce = MathF.Max(0f, (config.WheelMass * imposedNormalAcc) + input.staticNormalForce);
+
+                suspensionForce = normalForce;
+
+            }
+            else
+            {
+                normalForce = MathF.Max(0f, (config.WheelMass * acceleration) + input.staticNormalForce + damperForce + springForce);
+            }
         }
         else
         {
-            verticalLoad = (config.WheelMass * gravity) + springForce + damperForce;
+            normalForce = 0;
 
-            verticalWheelVelocity = verticalWheelVelocity + ((gravity + ((springForce + damperForce)/config.WheelMass)) * dt);
-            currentLength += verticalWheelVelocity * dt;
+            if (!maxDrooped)
+            {
+                float acc = (springForce + damperForce) / config.WheelMass;
+                verticalWheelVelocity += acc * dt;
+                currentLength += verticalWheelVelocity * dt;   
+            }
         }
 
         lastFrameLength = currentLength;
         lastFrameVelocity = currentVelocity;
 
-        SuspensionOutputData output = new();
-        output.isGrounded = isGrounded;
-        output.verticalLoad = verticalLoad;
-        output.suspensionForce = isGrounded ? springForce + damperForce : 0f;
-        output.verticalWheelDisplacement = currentLength;
-        output.springRate = config.SpringRate;
-
-        return output;
+        return new SuspensionOutputData
+        {
+            isGrounded = isGrounded,
+            normalForce = normalForce,
+            suspensionForce = isGrounded ? suspensionForce : 0f,
+            verticalWheelDisplacement = currentLength,
+            springRate = config.SpringRate,
+            maxCompressed = maxCompressed
+        };
     }
 }
 
 internal struct SuspensionInputData
 {
     public float raycastLength;
+    public Vector3 raycastNormal;
     public float wheelRadius;
-    public float verticalLoad;
+    public float staticNormalForce;
 }
 
 internal struct SuspensionOutputData
 {
     public bool isGrounded;
+    public bool maxCompressed;
     public float verticalWheelDisplacement;
     public float suspensionForce;
-    public float verticalLoad;
+    public float normalForce;
     public float springRate;
 }
