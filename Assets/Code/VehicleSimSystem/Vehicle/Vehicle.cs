@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 internal sealed class Vehicle
 {
-    private readonly IEnumerable<IVehicleComponent> components;
+    private readonly IEnumerable<Wheel> wheels;
     private readonly IEnumerable<IVehicleModule> modules;
 
-    internal Vehicle(IEnumerable<IVehicleComponent> components, IEnumerable<IVehicleModule> modules)
+    internal Vehicle(IEnumerable<Wheel> wheels, IEnumerable<IVehicleModule> modules)
     {
-        this.components = components;
+        this.wheels = wheels;
         this.modules = modules;
     }
 
@@ -29,11 +29,21 @@ internal sealed class Vehicle
     }
 
     internal void FixedUpdate(float fdt)
-    {
+    {     
+        foreach(Wheel wheel in wheels)
+        {
+            wheel.Setup();
+        }
+
         Parallel.ForEach(modules, module =>
         {
             module.FixedUpdate(fdt);
         });
+        
+        foreach(Wheel wheel in wheels)
+        {
+            wheel.Simulate(fdt);
+        }
     }
 
     internal void Update(float dt)

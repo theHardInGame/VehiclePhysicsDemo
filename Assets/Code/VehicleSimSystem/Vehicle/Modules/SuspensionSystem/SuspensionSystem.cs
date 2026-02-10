@@ -1,71 +1,29 @@
-using System.Threading.Tasks;
-
 internal sealed class SuspensionSystem : BaseVehicleModule
 {
-    private VehicleBody body;
     private Suspension[] suspensions;
-
-    private VehicleBodyInput vbInput;
-    private VehicleBodyOutput vbOutput;
-
     private readonly int suspensionCount;
 
-    public SuspensionSystem(IModulePort modulePort, VehicleBody body, Suspension[] suspensions) : base(modulePort)
+    public SuspensionSystem(IModuleSimulationPort modulePort, Suspension[] suspensions) : base(modulePort)
     {
-        this.body = body;
         this.suspensions = suspensions;
-
         suspensionCount = modulePort.GetWheelCount();
-        body.suspensionCount = suspensionCount;
-
-        for (int i = 0; i < suspensionCount; i++)
-        {
-            suspensions[i].ID = i;
-            suspensions[i].vectorFromCG = body.vectorsToSuspension[i] = modulePort.GetLocalPos(i) - body.localCG;
-        }
     }
     
-    protected override void OnActivate()
-    {
-        
-    }
-
-    protected override void OnDeactivate()
-    {
-        
-    }
+    protected override void OnActivate() {  }
+    protected override void OnDeactivate() { }
 
     protected override void OnFixedUpdate(float fdt)
     {
-        vbOutput = body.DistributeLoad(vbInput);
+        if (!isActive) return;
 
-        Parallel.ForEach(suspensions, suspension =>
+        for (int i = 0; i < suspensionCount; i++)
         {
-            int ID = suspension.ID;
-            SuspensionInputData suspensionInput = new()
-            {
-                raycastLength = modulePort.GetRaycastLength(ID),
-                raycastNormal = modulePort.GetRaycastNormal(ID),
-                wheelRadius = modulePort.GetRadius(ID),
-                staticNormalForce = vbOutput.staticLoadPerSuspension[ID]
-            };
-
-            SuspensionOutputData suspensionOutput = new();
-            suspensionOutput = suspension.Simulate(suspensionInput, fdt);
-
-            vbInput.isGrounded[ID] = suspensionOutput.isGrounded;
-            vbInput.springRates[ID] = suspensionOutput.springRate;
-            vbInput.maxCompressed[ID] = suspensionOutput.maxCompressed;
-            vbInput.suspensionNormals[ID] = modulePort.GetRaycastNormal(ID);
-
-            modulePort.SetSuspensionNormalForce(ID, suspensionOutput.normalForce);
-            modulePort.SetSuspensionForce(ID, suspensionOutput.suspensionForce);
-            modulePort.SetVerticalWheelDisplacement(ID, suspensionOutput.verticalWheelDisplacement);
-        });
+            float currentLength = moduleSimPort.GetSuspensionLength(i);
+            float springRelativeVelocity = moduleSimPort.GetSpringRelativeVelocity(i);
+            float suspensionForce = suspensions[i].Simulate(currentLength, springRelativeVelocity, fdt);
+            moduleSimPort.SetSuspensionForce(i, suspensionForce);
+        }
     }
 
-    protected override void OnUpdate(float dt)
-    {
-        
-    }
+    protected override void OnUpdate(float dt) { }
 }

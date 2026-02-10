@@ -1,5 +1,3 @@
-using System.Numerics;
-
 internal sealed class VehicleSimulationContext
 {
     #region Input States
@@ -7,52 +5,25 @@ internal sealed class VehicleSimulationContext
     // Input States
     // ==============
     
-    private float throttle;
-    private float brake;
-    private float steering;
+    internal float Throttle { get; private set; }
+    internal float Brake { get; private set; }
+    internal float Steering { get; private set; }
 
-    internal float GetThrottle() => throttle;
-    internal float GetBrake() => brake;
-    internal float GetSteering() => steering;
-
-    internal void SetThrottle(float throttle) { this.throttle = throttle; }
-    internal void SetBrake(float brake) { this.brake = brake; }
-    internal void SetSteering(float steering) { this.steering = steering; }
+    internal void SetThrottle(float throttle) { this.Throttle = throttle; }
+    internal void SetBrake(float brake) { this.Brake = brake; }
+    internal void SetSteering(float steering) { this.Steering = steering; }
     #endregion
 
 
-    #region Static States
-    // ===============
-    // Static States
-    // ===============
+    internal float EngineRPM { get; private set;}
+    internal void SetEngineRPM(float rpm) { EngineRPM = rpm; }
 
-    private Vector3 gravity;
-    private float mass;
-    internal float GetMass() => mass;
-    internal Vector3 GetGravity() => gravity;
-    internal void SetMass(float mass) { this.mass = mass; }
-    internal void SetGravity(Vector3 gravity) { this.gravity = gravity; }
-    #endregion
+    internal float DriveshaftRPM { get; private set; }
+    internal void SetDriveshaftRPM(float RPM) { DriveshaftRPM = RPM; }
 
+    internal int CurrentGear { get; private set; }
+    internal void SetCurrentGear(int index) => CurrentGear = index;
 
-    #region Dynamic States
-    // ================
-    // Dynamic States
-    // ================
-
-    private Vector3 cgLocal;
-    private Vector3 rbdLinearAcceleration;
-    private Vector3 rbdAngularVelocity;
-    private Vector3 rbdAngularAcceleration;
-
-    internal Vector3 GetCGLocal() => cgLocal;
-    internal Vector3 GetLinearAcceleartion() => rbdLinearAcceleration;
-    internal Vector3 GetAngularVelocity() => rbdAngularVelocity;
-    internal Vector3 GetAngularAcceleration() => rbdAngularAcceleration;
-
-    internal void SetCGLocal(Vector3 cgLocal) { this.cgLocal = cgLocal; }
-    internal void SetLinearAcceleration(Vector3 rbdLinearAcceleration) { this.rbdLinearAcceleration = rbdLinearAcceleration; }
-    internal void SetAngularVelocity(Vector3 rbdAngularVelocity) { this.rbdAngularVelocity = rbdAngularVelocity; }
-    internal void SetAngularAcceleration(Vector3 rbdAngularAcceleration) { this.rbdAngularAcceleration = rbdAngularAcceleration; }
-    #endregion
+    internal float VehicleSpeed { get; private set; }
+    internal void SetVehicleSpeed(float speed) => VehicleSpeed = speed;
 }

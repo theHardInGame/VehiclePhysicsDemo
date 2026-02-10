@@ -1,35 +1,74 @@
-internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainComponent
+internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainComponent, IASClutch
 {
     internal Clutch(ClutchConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
+        this.vIOState = null;
+        engagementRatio = 0f;
     }
 
-    private bool isEngaged;
+    private float engagementRatio; // 0 = fully slip, 1 = locked
 
-    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
+    private float engineSideTorque;
+    private float wheelSideTorque;
+
+
+    #region IDrivetrainComponent Interface
+    // ===============================================
+    // IDrivetrainComponent Interface Implementation
+    // ===============================================
+
+    public float SimulateForwardTorque(float torqueIn, float dt)
     {
-        float rpm = input.feedbackRPM;
+        engineSideTorque = torqueIn;
 
-        if (rpm < config.AutoDisengageRPM) isEngaged = false;
-        else if (rpm > config.AutoDisengageRPM) isEngaged = true;
+        return engineSideTorque * engagementRatio;
+    }
 
-        if (!isEngaged)
+    public float SimulateBackwardTorque(float torqueIn, float dt)
+    {
+        wheelSideTorque = torqueIn;
+
+        return wheelSideTorque * engagementRatio;
+    }
+    #endregion
+
+
+    #region IASClutch Interface
+    // ====================================
+    // IASClutch Interface Implementation
+    // ====================================
+    
+    private bool isShifting = false;
+    private float shiftTimer = 0;
+    public void Tick(float dt)
+    {
+        if (!isShifting)
         {
-            input.feedbackTorque = 0f;
+            StallSafety();
+            return;
         }
 
-        return input;
-    }
-
-    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
-    {
-        if (!isEngaged)
+        if (shiftTimer <= 0f)
         {
-            input.power = 0f;
-            input.torque = 0f;
-            input.rpm = 0f;
+            engagementRatio = 1;
+            isShifting = false;
+            return;
         }
 
-        return input;
+        shiftTimer -= dt;
     }
+
+    public void StallSafety()
+    {
+        if (vSimCtx.Throttle < 0.1f || vSimCtx.EngineRPM < config.AutoDisengageRPM) engagementRatio = 0;
+        else engagementRatio = 1f;
+    }
+
+    public void StartAutoShift()
+    {
+        engagementRatio = 0;
+        shiftTimer = config.AutoShiftTime;
+        isShifting = true;
+    }
+    #endregion
 }

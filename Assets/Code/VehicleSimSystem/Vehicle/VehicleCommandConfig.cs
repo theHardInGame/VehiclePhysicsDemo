@@ -4,8 +4,11 @@ using UnityEngine;
 public sealed class VehicleCommadConfig
 {
     [Min(0)]
-    public float MaxThrottleRate;
+    public float ThrottleRate;
     
     [Min(0)]
-    public float MaxSteerRate;
+    public float BrakeRate;
+
+    [Min(0)]
+    public float SteerRate;
 }

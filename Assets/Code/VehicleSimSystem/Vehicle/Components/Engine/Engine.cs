@@ -1,74 +1,42 @@
-using UnityEngine;
+using System;
 
 internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainComponent
 {
     internal Engine(EngineConfig config, VehicleIOState vIOState) : base(config, vIOState)
     {
-        rpm = config.idleRPM;
+        this.vIOState = null;
+        RPM = 0;
     }
 
-    private float rpm;
+    private float RPM;
+    private float NetTorque => engineTorque - loadTorque;
     private float loadTorque;
-    private float power;
+    private float engineTorque;
 
-
-    private float Throttle => vIOState.vSimCtx.GetThrottle();
-
-
-    private float GetTorque()
+    public float SimulateForwardTorque(float torqueIn, float dt)
     {
-        float omega = rpm * Mathf.Deg2Rad * (1/60);
-
-        if (omega <= 0f) return 0f;
-
-        power = config.PowerCurve.Evaluate(rpm) * Throttle;
-        return power/omega;
+        engineTorque = config.RPMTorqueCurve.Evaluate(RPM) * vSimCtx.Throttle;
+        return NetTorque;
     }
 
-    private void EngineCycle(float dt)
+    public float SimulateBackwardTorque(float torqueIn, float dt)
     {
-        float torque = GetTorque();
-        float frictionTorque = config.Friction * rpm;
+        loadTorque = torqueIn;
+        RPM += NetTorque * dt * 60 / (2 * config.RotationalInertia * MathF.PI);
+        
+        RPM -= RPM * config.EngineDrag * dt;
 
-        float netTorque = torque - loadTorque - frictionTorque;
-        float angAcc = netTorque / config.Inertia;
-
-        rpm += angAcc * dt;
-
-        if (rpm < 0f) rpm = 0f;
-
-        rpm = Mathf.Clamp(rpm, 0f, config.maxRPM);
-    }
-
-    private void RPMRecovery(float dt)
-    {
-        if (Mathf.Approximately(Throttle, 0))
+        if (RPM < config.IdleRPM)
         {
-            rpm = Mathf.MoveTowards(rpm, config.idleRPM, 10 * dt);
+            float idleError = config.IdleRPM - RPM;
+            RPM += idleError * config.IdleRecoveryStrength * dt;
         }
+
+        RPM = MathF.Max(RPM, 0f);
+        RPM = MathF.Min(RPM, config.MaxRPM);
+
+        vSimCtx.SetEngineRPM(RPM);
+
+        return 0f;
     }
-
-    #region Drivetrain Module Interface
-    // ============================================
-    // IDrivetrainModule Interface Implementation
-    // ============================================
-
-    public DrivetrainForwardState Forward(DrivetrainForwardState input, float tick)
-    {
-        EngineCycle(tick);
-        RPMRecovery(tick);
-
-        input.power = this.power;
-        input.rpm = rpm;
-        input.torque = GetTorque();
-        return input;
-    }
-
-    public DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick)
-    {
-        loadTorque = input.feedbackTorque;
-        rpm = input.feedbackRPM;
-        return input;
-    }
-    #endregion
 }

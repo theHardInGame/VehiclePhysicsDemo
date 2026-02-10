@@ -1,29 +1,34 @@
 internal abstract class BaseVehicleModule : IVehicleModule
 {
-    protected IModulePort modulePort;
-
-    public BaseVehicleModule(IModulePort modulePort)
+    protected IModuleSimulationPort moduleSimPort;
+    protected bool isActive = false;
+    public BaseVehicleModule(IModuleSimulationPort modulePort)
     {
-        this.modulePort = modulePort;
+        this.moduleSimPort = modulePort;
     }
 
     public void Activate()
     {
+        isActive = true;
         OnActivate();
     }
 
     public void Deactivate()
     {
+        isActive = false;
         OnDeactivate();
     }
 
     public void FixedUpdate(float fdt)
     {
+        if (!isActive) return;
+
         OnFixedUpdate(fdt);
     }
 
     public void Update(float dt)
     {
+        if (!isActive) return;
         OnUpdate(dt);
     }
 

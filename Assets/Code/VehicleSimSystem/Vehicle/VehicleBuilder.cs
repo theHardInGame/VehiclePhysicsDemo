@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 internal sealed class VehicleBuilder
 {
-    private VehicleIOState vIOState;
-    private WheelModulePort wheelModulePort;
+    private readonly VehicleIOState vIOState;
+    private readonly SimulationPort wheelModulePort;
 
-    internal VehicleBuilder(VehicleIOState vIOState, WheelModulePort wheelModulePort)
+    internal VehicleBuilder(VehicleIOState vIOState, SimulationPort wheelModulePort)
     {
         this.vIOState = vIOState;
         this.wheelModulePort = wheelModulePort;
@@ -18,21 +18,18 @@ internal sealed class VehicleBuilder
         // Construct Components
         // ======================
 
-        var _components = new List<IVehicleComponent>();
-
         Engine engine = new Engine(config.Engine, vIOState);
         Clutch clutch = new Clutch(config.Clutch, vIOState);
         Gearbox gearbox = new Gearbox(config.Gearbox, vIOState);
         Differetial differetial = new Differetial(config.Differential, vIOState);
 
-        _components.Add(engine);
-        _components.Add(clutch);
-        _components.Add(gearbox);
-        _components.Add(differetial);
 
+        List<Wheel> _wheels = new();
+        List<Suspension> _suspensions = new();
         for (int i = 0; i < config.Wheels.Length; i++)
         {
-            _components.Add(new Wheel(config.Wheels[i], vIOState, wheelModulePort));
+            _wheels.Add(new Wheel(config.Wheels[i], vIOState, wheelModulePort));
+            _suspensions.Add(new Suspension(config.Wheels[i].Suspension, vIOState));
         }
 
         #endregion
@@ -44,16 +41,23 @@ internal sealed class VehicleBuilder
 
         var _modules = new List<IVehicleModule>();
 
-        var drivetrain = new DrivetrainModule(wheelModulePort, differetial, new IDrivetrainComponent[]
+        IDrivetrainComponent[] drivetrainComponents = 
         {
             engine,
             clutch,
-            gearbox,
-        });
+            gearbox
+        };
+
+        var drivetrain = new DrivetrainModule(wheelModulePort, drivetrainComponents, differetial);
+        var suspension = new SuspensionSystem(wheelModulePort, _suspensions.ToArray());
+        var autoShifting = new AutoShiftingModule(wheelModulePort, clutch, gearbox);
+
 
         _modules.Add(drivetrain);
+        _modules.Add(suspension);
+        _modules.Add(autoShifting);
         #endregion
 
-        return new Vehicle(_components, _modules);
+        return new Vehicle(_wheels, _modules);
     }
 }

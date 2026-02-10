@@ -1,18 +1,13 @@
 internal interface IDrivetrainComponent
 {
-    DrivetrainForwardState Forward(DrivetrainForwardState input, float tick);
-    DrivetrainBackwardState Backward(DrivetrainBackwardState input, float tick);
+    float SimulateForwardTorque(float torqueIn, float dt);
+
+    float SimulateBackwardTorque(float torqueIn, float dt);
+    
 }
 
-internal struct DrivetrainForwardState
+internal struct DrivetrainChainData
 {
-    internal float power;
-    internal float rpm;
-    internal float torque;
-}
-
-internal struct DrivetrainBackwardState
-{
-    internal float feedbackTorque;
-    internal float feedbackRPM;
+    public float Torque;
+    public float RPM;
 }

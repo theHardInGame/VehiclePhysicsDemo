@@ -6,7 +6,7 @@ internal sealed class VehicleIOState
     private Dictionary<Guid, WheelInputState> WheelInputs;
     private Dictionary<Guid, WheelOutputState> WheelOutputs;
 
-    public VehicleSimulationContext vSimCtx;
+    public readonly VehicleSimulationContext vSimCtx;
 
     internal VehicleIOState(Dictionary<Guid, WheelInputState> WheelInputs, Dictionary<Guid, WheelOutputState> WheelOutputs, VehicleSimulationContext vSimCtx)
     {

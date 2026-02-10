@@ -1,83 +1,58 @@
 internal sealed class DrivetrainModule : BaseVehicleModule
 {
-    private bool isActive ;
-    private IDrivetrainComponent[] drivetrainComponents;
-    private IJunctionComponent<DifferentialForwardState, DifferentialBackwardState> junctionComponent;
-
-    private readonly int[] poweredWheel;
+    private readonly int[] poweredWheels;
     private readonly int poweredWheelCount;
-    private DifferentialBackwardState dbstate;
-    private DifferentialForwardState dfstate;
 
-    private DrivetrainBackwardState bstate;
-    private DrivetrainForwardState fstate;
+    private readonly Differetial differetial;
 
-    public DrivetrainModule(IModulePort modulePort, IJunctionComponent<DifferentialForwardState, DifferentialBackwardState> junctionComponent, IDrivetrainComponent[] drivetrainComponents) : base(modulePort)
+    private readonly IDrivetrainComponent[] drivetrainComponent;
+
+    public DrivetrainModule(IModuleSimulationPort modulePort, IDrivetrainComponent[] drivetrainComponent, Differetial differetial) : base(modulePort)
     {
-        this.drivetrainComponents = drivetrainComponents;
-        this.junctionComponent = junctionComponent;
+        this.drivetrainComponent = drivetrainComponent;
+        this.differetial = differetial;
 
-        poweredWheel = modulePort.GetPoweredWheels();
-        poweredWheelCount = poweredWheel.Length;
-
-        dbstate = new();
-        dbstate.feedbackRPMs = new float[poweredWheelCount];
-        dbstate.feedbackTorques = new float[poweredWheelCount];
-
-        dbstate = new();
-        dfstate.wheelRPMs = new float[poweredWheelCount];
-        dfstate.wheelTorques = new float[poweredWheelCount];
+        poweredWheels = modulePort.GetPoweredWheels();
+        poweredWheelCount = poweredWheels.Length;
     }
 
-    protected override void OnActivate()
-    {
-        isActive = true;
-    }
+    protected override void OnActivate() { }
 
-    protected override void OnDeactivate()
-    {
-        isActive = false;
-    }
+    protected override void OnDeactivate() { }
 
     protected override void OnFixedUpdate(float fdt)
-    {
-        if (!isActive) return;
+    {       
+        float[] wheelTorques = new float[poweredWheelCount];
+        for (int i = 0; i < poweredWheelCount; i++)
+        {
+            wheelTorques[i] = moduleSimPort.GetWheelTorque(poweredWheels[i]);
+        }
 
-        bstate = new();
+        float backwardInput = differetial.CombineTorque(wheelTorques);
+        for (int i = drivetrainComponent.Length - 1; i >= 0; i--)
+        {
+            backwardInput = drivetrainComponent[i].SimulateBackwardTorque(backwardInput, fdt);
+        }
+
+        float forwardInput = 0;
+        for (int i = 0; i < drivetrainComponent.Length; i++)
+        {
+            forwardInput = drivetrainComponent[i].SimulateForwardTorque(forwardInput, fdt);
+        }
+
+        float[] wheelRPMs = new float[poweredWheelCount];
+        for (int i = 0; i < poweredWheelCount; i++)
+        {
+            wheelRPMs[i] = moduleSimPort.GetWheelRPM(poweredWheels[i]);
+        }
+
+        float[] Tws = differetial.SplitTorque(forwardInput, wheelRPMs);
 
         for (int i = 0; i < poweredWheelCount; i++)
         {
-            dbstate.feedbackRPMs[i] = modulePort.GetFeedbackRPM(poweredWheel[i]);
-            dbstate.feedbackTorques[i] = modulePort.GetFeedbackTorque(poweredWheel[i]);
-        }
-
-        bstate = junctionComponent.Backward(dbstate, fdt).backward;
-
-        for (int i = drivetrainComponents.Length - 1; i >= 0; i--)
-        {
-            bstate = drivetrainComponents[i].Backward(bstate, fdt);
-        }
-
-        fstate = new();
-
-        for (int i = 0; i < drivetrainComponents.Length; i++)
-        {
-            fstate = drivetrainComponents[i].Forward(fstate, fdt);
-        }
-
-        dfstate.forward = fstate;
-
-        dfstate = junctionComponent.Forward(dfstate, fdt);
-
-        for (int i = 0; i < poweredWheelCount; i++)
-        {
-            modulePort.SetDrivetrainRPM(poweredWheel[i], dfstate.wheelRPMs[i]);
-            modulePort.SetDrivetrainTorque(poweredWheel[i], dfstate.wheelTorques[i]);
+            moduleSimPort.SetDrivetrainTorque(poweredWheels[i], Tws[i]);
         }
     }
 
-    protected override void OnUpdate(float dt)
-    {
-        
-    }
+    protected override void OnUpdate(float dt) { }
 }

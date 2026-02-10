@@ -5,8 +5,8 @@ public sealed class VehicleConfig : ScriptableObject
 {
     public string Name;
     public string ID;
+    public float BodyMass;
     public VehicleCommadConfig Commands;
-    public VehicleBodyConfig Body;
     public EngineConfig Engine;
     public ClutchConfig Clutch;
     public GearboxConfig Gearbox;

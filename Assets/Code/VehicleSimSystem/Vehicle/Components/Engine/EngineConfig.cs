@@ -4,20 +4,23 @@ using UnityEngine;
 [System.Serializable]
 public sealed class EngineConfig : BaseComponentConfig
 {
-    [Tooltip("Power output as a function of RPM (0–1) \n X-axis: RPM x 1000 \n Y-axis: Power x 50")]
-    public AnimationCurve PowerCurve;
+    [Tooltip("RPM - N.m Curve")]
+    public AnimationCurve RPMTorqueCurve;
 
-    [Tooltip("Engine idle speed (RPM)")]
     [Min(0)]
-    public float idleRPM;
+    public float IdleRPM;
 
-    [Tooltip("Maximum engine speed (RPM)")]
     [Min(0)]
-    public float maxRPM;
+    public float MaxRPM;
 
-    [Range(0f, 1f)]
-    public float Friction;
+    [Min(0)]
+    public float EngineDrag;
 
-    [Range(0f, 1f)]
-    public float Inertia;
+    [Min(0)]
+    public float IdleRecoveryStrength;
+
+    [Tooltip("Kg.m^2")]
+    [Min(0)]
+    public float RotationalInertia;
+
 }

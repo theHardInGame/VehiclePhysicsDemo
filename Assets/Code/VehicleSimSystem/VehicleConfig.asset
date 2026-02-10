@@ -14,31 +14,267 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VehicleConfig
   Name: Nissan 180SX
   ID: 
+  BodyMass: 1200
   Commands:
-    MaxThrottleRate: 0
-    MaxSteerRate: 0
+    ThrottleRate: 10
+    BrakeRate: 1
+    SteerRate: 1
   Engine:
-    PowerCurve:
+    RPMTorqueCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 1000
+        value: 0
+        inSlope: 0.105213776
+        outSlope: 0.105213776
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.10512231
+      - serializedVersion: 3
+        time: 4000
+        value: 275
+        inSlope: -0.00033788916
+        outSlope: -0.00033788916
+        tangentMode: 0
+        weightedMode: 2
+        inWeight: 0.33333334
+        outWeight: 0.5862381
+      - serializedVersion: 3
+        time: 6500
+        value: 200
+        inSlope: -0.13042216
+        outSlope: -0.13042216
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.10091777
+        outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    idleRPM: 1000
-    maxRPM: 7000
-    Friction: 0.13
-    Inertia: 0.254
+    IdleRPM: 1200
+    MaxRPM: 6500
+    EngineDrag: 0.05
+    IdleRecoveryStrength: 10
+    RotationalInertia: 0.3
   Clutch:
-    AutoDisengageRPM: 750
+    AutoShiftTime: 0.6
+    AutoDisengageRPM: 1300
   Gearbox:
-    GearRatio: 7
+    GearRatios:
+    - 3.027
+    - 1.169
+    - 1
+    - 0.694
+    UpshitSpeed:
+    - 12.7
+    - 26.38
+    - 40.27
+    - 69.44
+    FinalDrive: 4.363
+    UpshiftRPM: 1400
+    DownshiftRPM: 5000
   Differential:
-    MaxDifferentialTorque: 0
-    LSDSlipRPM: 0
-    LSDResponseCurve: 0
-    LSDTorqueBias: 1
+    slipCouplingCoefficient: 0.576
   Wheels:
   - Name: 
-    ID: 
+    ID: 16cc301c-e893-4bf7-a61a-718491c9c735
     Powered: 0
     Steered: 0
+    Radius: 0.17
+    SlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 31.289352
+        outSlope: 31.289352
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.33333334
+        outWeight: 0.120370366
+      - serializedVersion: 3
+        time: 0.18
+        value: 1
+        inSlope: -0
+        outSlope: -0
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.7916667
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0.9
+        inSlope: -0.0069696046
+        outSlope: -0.0069696046
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.68495935
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RollingResistance: 0
+    LongitudinalFriction: 0
+    LateralFriciton: 0.8
+    CorneringStiffness: 1300
+    Inertia: 1.5
+    Suspension:
+      RestLength: 0.6
+      MinLength: 0.2
+      MaxLength: 1
+      SpringRate: 20000
+      DamperRate: 60000
+      WheelMass: 35
+  - Name: 
+    ID: 57af3d8d-1664-4d45-b1e7-d7200cb55d53
+    Powered: 1
+    Steered: 0
+    Radius: 0.17
+    SlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 31.289352
+        outSlope: 31.289352
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.33333334
+        outWeight: 0.120370366
+      - serializedVersion: 3
+        time: 0.18
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.7916667
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0.9
+        inSlope: -0.0069696046
+        outSlope: -0.0069696046
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.68495935
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RollingResistance: 0
+    LongitudinalFriction: 0
+    LateralFriciton: 0.8
+    CorneringStiffness: 1300
+    Inertia: 1.5
+    Suspension:
+      RestLength: 0.6
+      MinLength: 0.2
+      MaxLength: 1
+      SpringRate: 20000
+      DamperRate: 60000
+      WheelMass: 35
+  - Name: 
+    ID: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
+    Powered: 0
+    Steered: 0
+    Radius: 0.17
+    SlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 31.289352
+        outSlope: 31.289352
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.33333334
+        outWeight: 0.120370366
+      - serializedVersion: 3
+        time: 0.18
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.7916667
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0.9
+        inSlope: -0.0069696046
+        outSlope: -0.0069696046
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.68495935
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RollingResistance: 0
+    LongitudinalFriction: 0
+    LateralFriciton: 0.8
+    CorneringStiffness: 1300
+    Inertia: 1.5
+    Suspension:
+      RestLength: 0.6
+      MinLength: 0.2
+      MaxLength: 1
+      SpringRate: 20000
+      DamperRate: 60000
+      WheelMass: 35
+  - Name: 
+    ID: 4717ff00-585a-4e12-a2fc-c36c95d49f74
+    Powered: 1
+    Steered: 0
+    Radius: 0.17
+    SlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 31.289352
+        outSlope: 31.289352
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.33333334
+        outWeight: 0.120370366
+      - serializedVersion: 3
+        time: 0.18
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.7916667
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0.9
+        inSlope: -0.0069696046
+        outSlope: -0.0069696046
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.68495935
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RollingResistance: 0
+    LongitudinalFriction: 0
+    LateralFriciton: 0.8
+    CorneringStiffness: 1300
+    Inertia: 1.5
+    Suspension:
+      RestLength: 0.6
+      MinLength: 0.2
+      MaxLength: 1
+      SpringRate: 20000
+      DamperRate: 60000
+      WheelMass: 35

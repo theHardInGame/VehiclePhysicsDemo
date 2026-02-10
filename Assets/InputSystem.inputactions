@@ -10,7 +10,7 @@
                     "name": "Accelerate",
                     "type": "Value",
                     "id": "4bf46b74-f67f-420d-9ad3-cf37bb63ec3d",
-                    "expectedControlType": "Analog",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -19,7 +19,7 @@
                     "name": "Brake",
                     "type": "Value",
                     "id": "2f60e133-2c8f-472d-a9b8-e263f1d71cf9",
-                    "expectedControlType": "Analog",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -35,17 +35,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "cd30e770-8631-498d-aa3e-502ea894f08d",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Accelerate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "90187a9d-d51b-4dc8-9757-e217f8fd264f",
@@ -89,6 +78,17 @@
                     "action": "Steering",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "52edd276-4ac5-4535-a181-a510ed423ce6",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Accelerate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
