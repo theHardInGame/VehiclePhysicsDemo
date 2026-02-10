@@ -64,9 +64,6 @@ internal sealed class Wheel : BaseVehicleComponent<WheelConfig>
         angularAcc = (tDrivetrain - tResistance) / config.Inertia;
         wheelOmega += angularAcc * dt;
 
-        
-        //wheelOmega += (tDrivetrain - (F_tire * config.Radius)) * dt / config.Inertia;
-
         wheelRPM = wheelOmega * 60 / (2 * MathF.PI);
         wheelOPS.wheelAngularVelocity = wheelOmega;
 

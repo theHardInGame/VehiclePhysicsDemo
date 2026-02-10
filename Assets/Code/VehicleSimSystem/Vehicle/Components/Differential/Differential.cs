@@ -9,6 +9,7 @@ internal sealed class Differetial : BaseVehicleComponent<DifferentialConfig>
     {
         int wheelCount = RPM_w.Length;
         float driveshaftRPM = 0;
+        
         float[] T_ws = new float[wheelCount];
 
         for (int i = 0; i < wheelCount; i++)

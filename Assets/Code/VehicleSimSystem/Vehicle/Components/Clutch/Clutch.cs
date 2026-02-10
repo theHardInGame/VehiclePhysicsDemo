@@ -60,7 +60,7 @@ internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainCo
 
     public void StallSafety()
     {
-        if (vSimCtx.Throttle < 0.1f || vSimCtx.EngineRPM < config.AutoDisengageRPM) engagementRatio = 0;
+        if (vSimCtx.Throttle < 0.1f && vSimCtx.EngineRPM < config.AutoDisengageRPM) engagementRatio = 0;
         else engagementRatio = 1f;
     }
 

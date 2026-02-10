@@ -55,7 +55,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     IdleRPM: 1200
     MaxRPM: 6500
-    EngineDrag: 0.05
+    EngineDrag: 0.2
     IdleRecoveryStrength: 10
     RotationalInertia: 0.3
   Clutch:
@@ -73,12 +73,12 @@ MonoBehaviour:
     - 40.27
     - 69.44
     FinalDrive: 4.363
-    UpshiftRPM: 1400
-    DownshiftRPM: 5000
+    UpshiftRPM: 4000
+    DownshiftRPM: 1400
   Differential:
     slipCouplingCoefficient: 0.576
   Wheels:
-  - Name: 
+  - Name: somewheel
     ID: 16cc301c-e893-4bf7-a61a-718491c9c735
     Powered: 0
     Steered: 0
@@ -107,25 +107,25 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 0.9
-        inSlope: -0.0069696046
-        outSlope: -0.0069696046
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 1
-        inWeight: 0.68495935
-        outWeight: 0
+        inWeight: 0.6310976
+        outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    RollingResistance: 0
-    LongitudinalFriction: 0
+    RollingResistance: 0.0005
+    LongitudinalFriction: 0.75
     LateralFriciton: 0.8
     CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
-      RestLength: 0.6
-      MinLength: 0.2
-      MaxLength: 1
-      SpringRate: 20000
+      RestLength: 0.2
+      MinLength: 0.1
+      MaxLength: 0.25
+      SpringRate: 60000
       DamperRate: 60000
       WheelMass: 35
   - Name: 
@@ -166,16 +166,16 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    RollingResistance: 0
-    LongitudinalFriction: 0
+    RollingResistance: 0.0005
+    LongitudinalFriction: 0.75
     LateralFriciton: 0.8
     CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
-      RestLength: 0.6
-      MinLength: 0.2
-      MaxLength: 1
-      SpringRate: 20000
+      RestLength: 0.2
+      MinLength: 0.1
+      MaxLength: 0.25
+      SpringRate: 60000
       DamperRate: 60000
       WheelMass: 35
   - Name: 
@@ -216,16 +216,16 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    RollingResistance: 0
-    LongitudinalFriction: 0
+    RollingResistance: 0.0005
+    LongitudinalFriction: 0.75
     LateralFriciton: 0.8
     CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
-      RestLength: 0.6
-      MinLength: 0.2
-      MaxLength: 1
-      SpringRate: 20000
+      RestLength: 0.2
+      MinLength: 0.1
+      MaxLength: 0.25
+      SpringRate: 60000
       DamperRate: 60000
       WheelMass: 35
   - Name: 
@@ -266,15 +266,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    RollingResistance: 0
-    LongitudinalFriction: 0
+    RollingResistance: 0.0005
+    LongitudinalFriction: 0.75
     LateralFriciton: 0.8
     CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
-      RestLength: 0.6
-      MinLength: 0.2
-      MaxLength: 1
-      SpringRate: 20000
+      RestLength: 0.2
+      MinLength: 0.1
+      MaxLength: 0.25
+      SpringRate: 60000
       DamperRate: 60000
       WheelMass: 35

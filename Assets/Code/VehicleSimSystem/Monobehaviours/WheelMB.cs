@@ -8,6 +8,7 @@ internal sealed class WheelMB : MonoBehaviour
     [SerializeField, ReadOnly] private string id;
     [SerializeField] private Rigidbody wheelDisplace;
     [SerializeField] private Transform wheelRotate;
+    [SerializeField] private WheelCollider wheelCollider;
     [SerializeField] private Rigidbody body;
     [SerializeField] private TextMeshProUGUI debugText;
     public Guid ID { get; private set; }
@@ -76,6 +77,8 @@ internal sealed class WheelMB : MonoBehaviour
         Vector3 vPointBody  = body.linearVelocity + Vector3.Cross(body.angularVelocity, rBody);
 
         WheelIPS.springRelativeVelocity = Vector3.Dot(vPointWheel - vPointBody, axis);
+
+        //WheelIPS.IsGrounded = wheelCollider.IsGrounded;
     }
 
     float wheelAngle;
@@ -130,7 +133,14 @@ internal sealed class WheelMB : MonoBehaviour
 
     private void LongitudinalForce()
     {
-        body.AddForceAtPosition(wheelDisplace.transform.right * WheelOPS.forwardForce, wheelDisplace.transform.position);
+        if (!wheelCollider.IsGrounded) return;
+        
+        float forwardForce = WheelOPS.forwardForce;
+        (Vector3 Loc, Vector3 Dir) = wheelCollider.GetForceLocationAndDirection(MathF.Sign(forwardForce));
+
+        body.AddForceAtPosition(Dir * WheelOPS.forwardForce, Loc);
+
+        Debug.DrawRay(Loc, Dir * forwardForce, Color.red);
 
         debugText.text += $"Long Force: {WheelOPS.forwardForce}";
         debugText.text += $"Lat Force: {WheelOPS.lateralForce}";

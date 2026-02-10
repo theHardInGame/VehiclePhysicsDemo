@@ -111,9 +111,10 @@ internal sealed class VehicleController : MonoBehaviour
     {
         debugText.text = $"Throttle: { vSimCtx.Throttle }\n";
         debugText.text += $"Brake: { vehicleIP.Brake }\n";
-        debugText.text += $"Steering: {vehicleIP.Steer}\n";
-        debugText.text += $"Vehicle Speed: {vSimCtx.VehicleSpeed}\n";
+        debugText.text += $"Steering: { vehicleIP.Steer }\n";
+        debugText.text += $"Vehicle Speed: { vSimCtx.VehicleSpeed }\n";
         debugText.text += $"Engine RPM: { vSimCtx.EngineRPM }\n";
+        debugText.text += $"Driveshaft RPM: { vSimCtx.DriveshaftRPM }\n";
         debugText.text += $"Current Gear: { vSimCtx.CurrentGear + 1 }\n";
     }
 }

@@ -23,18 +23,18 @@ internal sealed class AutoShiftingModule : BaseVehicleModule
     {
         clutch.Tick(fdt);
 
-        switch (shiftRequest)
+        /*switch (shiftRequest)
         {
             case ShiftRequest.Upshift:
                 clutch.StartAutoShift();
-                gearbox.Downshift();
+                gearbox.Upshift();
                 break;
 
             case ShiftRequest.Downshift:
                 clutch.StartAutoShift();
                 gearbox.Downshift();
                 break;
-        }
+        }*/
     }
 
     protected override void OnUpdate(float dt)
