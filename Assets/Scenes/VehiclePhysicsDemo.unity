@@ -404,7 +404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &271443062
 RectTransform:
   m_ObjectHideFlags: 0
@@ -825,7 +825,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 260, y: -100}
+  m_AnchoredPosition: {x: 260, y: -40}
   m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &400317981
@@ -996,7 +996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &436764556
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1165,7 +1165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &671575236
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2439,8 +2439,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1352596177}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10592529, y: -0.000000051288165, z: 0.000000005463451, w: 0.9943741}
-  m_LocalPosition: {x: 0.0000009947147, y: 3.3330343, z: -9.6427555}
+  m_LocalRotation: {x: 0.11096537, y: -0.000000040538623, z: 0.0000000045263366, w: 0.9938243}
+  m_LocalPosition: {x: 0.00000057416133, y: 2.6747305, z: -7.0379233}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2458,8 +2458,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
-  CameraDistance: 10
-  DeadZoneDepth: 0.3
+  CameraDistance: 7.32
+  DeadZoneDepth: 2
   Composition:
     ScreenPosition: {x: 0, y: 0.1}
     DeadZone:
@@ -2499,7 +2499,7 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 3, y: 0, z: 0}
+  TargetOffset: {x: 2.1, y: 0, z: 0}
   Damping: {x: 0.5, y: 0.5}
   Lookahead:
     Enabled: 0
@@ -2669,8 +2669,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1360467064}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10592529, y: -0.000000051288165, z: 0.000000005463451, w: 0.9943741}
-  m_LocalPosition: {x: 0.0000009947147, y: 3.3330343, z: -9.6427555}
+  m_LocalRotation: {x: 0.11104459, y: -0.00000006174116, z: 0.000000006898688, w: 0.9938155}
+  m_LocalPosition: {x: 0.00000057416133, y: 2.6747303, z: -7.0379233}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3427,7 +3427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2116582130
 RectTransform:
   m_ObjectHideFlags: 0

@@ -79,7 +79,7 @@ internal sealed class WheelMB : MonoBehaviour
 
         WheelIPS.springRelativeVelocity = Vector3.Dot(vPointWheel - vPointBody, axis);
 
-        //WheelIPS.IsGrounded = wheelCollider.IsGrounded;
+        WheelIPS.IsGrounded = wheelCollider.IsGrounded;
     }
 
     float rollAngle;
@@ -143,18 +143,18 @@ internal sealed class WheelMB : MonoBehaviour
         Vector3 LongDir = wheelCollider.transform.right;
 
         body.AddForceAtPosition(LongDir * forwardForce, LongLoc);
-        Debug.DrawRay(LongLoc, LongDir * forwardForce, Color.red);
+        //Debug.DrawRay(LongLoc, LongDir * forwardForce, Color.red);
 
         float lateralForce = WheelOPS.lateralForce;
         Vector3 LatLoc = wheelCollider.GetForceLocAndDir(lateralForce, new Vector3(0, 0, lateralForce).normalized);
         Vector3 LatDir = wheelCollider.transform.forward;
 
         body.AddForceAtPosition(LatDir * lateralForce, LatLoc);
-        Debug.DrawRay(LatLoc, LatDir * lateralForce, Color.blue);
+        //Debug.DrawRay(LatLoc, LatDir * lateralForce, Color.blue);
         
 
-        debugText.text += $"Long Force: {WheelOPS.forwardForce}";
-        debugText.text += $"Lat Force: {WheelOPS.lateralForce}";
+        //debugText.text += $"Long Force: {WheelOPS.forwardForce}";
+        //debugText.text += $"Lat Force: {WheelOPS.lateralForce}";
     }
 
     private void Steer()

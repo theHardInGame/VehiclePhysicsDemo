@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.EditorTools;
-
 
 [CreateAssetMenu(fileName = "BootConfig", menuName = "Bootstrap/BootConfig")]
 public class BootConfig : ScriptableObject

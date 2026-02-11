@@ -1,9 +1,6 @@
 using UnityEngine;
 using System.Threading.Tasks;
-using System.Linq;
 using UnityEngine.SceneManagement;
-using System;
-using UnityEditor.Build.Reporting;
 
 public class BootstrapManager : MonoBehaviour
 {
