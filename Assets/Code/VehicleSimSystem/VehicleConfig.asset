@@ -60,7 +60,7 @@ MonoBehaviour:
     RotationalInertia: 0.3
   Clutch:
     AutoShiftTime: 0.6
-    AutoDisengageRPM: 2000
+    AutoDisengageRPM: 1800
   Gearbox:
     GearRatios:
     - 3.027
@@ -82,7 +82,7 @@ MonoBehaviour:
     ID: 16cc301c-e893-4bf7-a61a-718491c9c735
     Powered: 0
     Steered: 1
-    RecieveBrake: 1
+    RecieveBrake: 0
     Radius: 0.17
     LongSlipCurve:
       serializedVersion: 2
@@ -160,9 +160,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RollingResistance: 0.0005
-    LongitudinalFriction: 0.75
-    LateralFriciton: 0.8
-    CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
       RestLength: 0.2
@@ -175,99 +172,6 @@ MonoBehaviour:
     ID: 57af3d8d-1664-4d45-b1e7-d7200cb55d53
     Powered: 1
     Steered: 0
-    RecieveBrake: 0
-    Radius: 0.17
-    LongSlipCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 14.281548
-        outSlope: 14.281548
-        tangentMode: 0
-        weightedMode: 2
-        inWeight: 0.33333334
-        outWeight: 0.31770834
-      - serializedVersion: 3
-        time: 0.16
-        value: 1
-        inSlope: 0.14764933
-        outSlope: 0.14764933
-        tangentMode: 0
-        weightedMode: 3
-        inWeight: 0.33333334
-        outWeight: 0.18650793
-      - serializedVersion: 3
-        time: 1
-        value: 0.9
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 1
-        inWeight: 0.6319445
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    LatSlipCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 15.110589
-        outSlope: 15.110589
-        tangentMode: 0
-        weightedMode: 2
-        inWeight: 0.33333334
-        outWeight: 0.28889406
-      - serializedVersion: 3
-        time: 0.15
-        value: 1.1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 2
-        inWeight: 0.33333334
-        outWeight: 0.20823574
-      - serializedVersion: 3
-        time: 0.35
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 3
-        inWeight: 0.53749996
-        outWeight: 0.1755149
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 1
-        inWeight: 0.52619886
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    RollingResistance: 0.0005
-    LongitudinalFriction: 0.75
-    LateralFriciton: 0.8
-    CorneringStiffness: 1300
-    Inertia: 1.5
-    Suspension:
-      RestLength: 0.2
-      MinLength: 0.1
-      MaxLength: 0.25
-      SpringRate: 60000
-      DamperRate: 60000
-      WheelMass: 35
-  - Name: FR
-    ID: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
-    Powered: 0
-    Steered: 1
     RecieveBrake: 1
     Radius: 0.17
     LongSlipCurve:
@@ -346,9 +250,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RollingResistance: 0.0005
-    LongitudinalFriction: 0.75
-    LateralFriciton: 0.8
-    CorneringStiffness: 1300
     Inertia: 1.5
     Suspension:
       RestLength: 0.2
@@ -357,10 +258,10 @@ MonoBehaviour:
       SpringRate: 60000
       DamperRate: 60000
       WheelMass: 35
-  - Name: BR
-    ID: 4717ff00-585a-4e12-a2fc-c36c95d49f74
-    Powered: 1
-    Steered: 0
+  - Name: FR
+    ID: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
+    Powered: 0
+    Steered: 1
     RecieveBrake: 0
     Radius: 0.17
     LongSlipCurve:
@@ -439,9 +340,96 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RollingResistance: 0.0005
-    LongitudinalFriction: 0.75
-    LateralFriciton: 0.8
-    CorneringStiffness: 1300
+    Inertia: 1.5
+    Suspension:
+      RestLength: 0.2
+      MinLength: 0.1
+      MaxLength: 0.25
+      SpringRate: 60000
+      DamperRate: 60000
+      WheelMass: 35
+  - Name: BR
+    ID: 4717ff00-585a-4e12-a2fc-c36c95d49f74
+    Powered: 1
+    Steered: 0
+    RecieveBrake: 1
+    Radius: 0.17
+    LongSlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 14.281548
+        outSlope: 14.281548
+        tangentMode: 0
+        weightedMode: 2
+        inWeight: 0.33333334
+        outWeight: 0.31770834
+      - serializedVersion: 3
+        time: 0.16
+        value: 1
+        inSlope: 0.14764933
+        outSlope: 0.14764933
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.33333334
+        outWeight: 0.18650793
+      - serializedVersion: 3
+        time: 1
+        value: 0.9
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.6319445
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    LatSlipCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 15.110589
+        outSlope: 15.110589
+        tangentMode: 0
+        weightedMode: 2
+        inWeight: 0.33333334
+        outWeight: 0.28889406
+      - serializedVersion: 3
+        time: 0.15
+        value: 1.1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 2
+        inWeight: 0.33333334
+        outWeight: 0.20823574
+      - serializedVersion: 3
+        time: 0.35
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 3
+        inWeight: 0.53749996
+        outWeight: 0.1755149
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 1
+        inWeight: 0.52619886
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RollingResistance: 0.0005
     Inertia: 1.5
     Suspension:
       RestLength: 0.2

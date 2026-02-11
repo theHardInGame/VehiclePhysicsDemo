@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.thehardingame.bootstrap": {
-      "version": "git@github.com:theHardInGame/com.thehardingame.bootstrap.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "c8fe00a588fa01fcf5f9fa07374722e6f756f0f5"
-    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
