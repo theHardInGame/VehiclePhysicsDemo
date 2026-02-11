@@ -20,14 +20,14 @@ internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainCo
     public float SimulateForwardTorque(float torqueIn, float dt)
     {
         engineSideTorque = torqueIn;
-
+        StallSafety();
         return engineSideTorque * engagementRatio;
     }
 
     public float SimulateBackwardTorque(float torqueIn, float dt)
     {
         wheelSideTorque = torqueIn;
-
+        StallSafety();
         return wheelSideTorque * engagementRatio;
     }
     #endregion
@@ -60,7 +60,7 @@ internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainCo
 
     public void StallSafety()
     {
-        if (vSimCtx.Throttle < 0.1f && vSimCtx.EngineRPM < config.AutoDisengageRPM) engagementRatio = 0;
+        if (vSimCtx.EngineRPM < config.AutoDisengageRPM) engagementRatio = 0;
         else engagementRatio = 1f;
     }
 

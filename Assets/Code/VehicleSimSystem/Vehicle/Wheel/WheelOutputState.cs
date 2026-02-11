@@ -4,5 +4,5 @@ internal sealed class WheelOutputState
     public float lateralForce;
     public float suspensionForce;
     public float wheelAngularVelocity;
-    
+    public float wheelSteer;
 }

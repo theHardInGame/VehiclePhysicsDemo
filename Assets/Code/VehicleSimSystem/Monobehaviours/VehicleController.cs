@@ -92,17 +92,17 @@ internal sealed class VehicleController : MonoBehaviour
     private void UpdateVehicleContext()
     {
         float throttleRate = vehicleConfig.Commands.ThrottleRate * Time.fixedDeltaTime;
-        Throttle = Mathf.Lerp(Throttle, vehicleIP.Throttle, throttleRate);
+        Throttle = Mathf.MoveTowards(Throttle, vehicleIP.Throttle, throttleRate);
 
         float brakeRate = vehicleConfig.Commands.BrakeRate * Time.fixedDeltaTime;
-        Brake = Mathf.Lerp(Brake, vehicleIP.Brake, brakeRate);
+        Brake = Mathf.MoveTowards(Brake, vehicleIP.Brake, brakeRate);
 
         float steerRate = vehicleConfig.Commands.SteerRate * Time.fixedDeltaTime;
-        Steer = Mathf.Lerp(Steer, vehicleIP.Steer, steerRate);
+        Steer = Mathf.MoveTowards(Steer, vehicleIP.Steer, steerRate);
 
         vSimCtx.SetThrottle(Throttle);
-        vSimCtx.SetBrake(vehicleIP.Brake);
-        vSimCtx.SetSteering(vehicleIP.Steer);
+        vSimCtx.SetBrake(Brake);
+        vSimCtx.SetSteering(Steer);
 
         vSimCtx.SetVehicleSpeed(body.transform.InverseTransformDirection(body.linearVelocity).x);
     }
@@ -110,8 +110,8 @@ internal sealed class VehicleController : MonoBehaviour
     private void DebugUpdate()
     {
         debugText.text = $"Throttle: { vSimCtx.Throttle }\n";
-        debugText.text += $"Brake: { vehicleIP.Brake }\n";
-        debugText.text += $"Steering: { vehicleIP.Steer }\n";
+        debugText.text += $"Brake: { vSimCtx.Brake }\n";
+        debugText.text += $"Steering: { vSimCtx.Steering }\n";
         debugText.text += $"Vehicle Speed: { vSimCtx.VehicleSpeed }\n";
         debugText.text += $"Engine RPM: { vSimCtx.EngineRPM }\n";
         debugText.text += $"Driveshaft RPM: { vSimCtx.DriveshaftRPM }\n";

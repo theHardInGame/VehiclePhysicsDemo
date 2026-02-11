@@ -15,22 +15,17 @@ public sealed class WheelConfig : BaseComponentConfig
     [Tooltip("Is this wheel steerable?")]
     public bool Steered;
 
+    [Tooltip("Does this wheel recieve brake?")]
+    public bool RecieveBrake;
+
     [Min(0)]
     public float Radius;
 
-    public AnimationCurve SlipCurve;
+    public AnimationCurve LongSlipCurve;
+    public AnimationCurve LatSlipCurve;
 
     [Min(0)]
     public float RollingResistance;
-
-    [Range(0, 1)]
-    public float LongitudinalFriction;
-
-    [Range(0, 1)]
-    public float LateralFriciton;
-    
-    [Min(0)]
-    public float CorneringStiffness;
 
     [Min(0)]
     public float Inertia;

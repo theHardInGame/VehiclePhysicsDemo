@@ -55,7 +55,7 @@ internal sealed class VehicleBuilder
 
         _modules.Add(drivetrain);
         _modules.Add(suspension);
-        _modules.Add(autoShifting);
+        //_modules.Add(autoShifting);
         #endregion
 
         return new Vehicle(_wheels, _modules);

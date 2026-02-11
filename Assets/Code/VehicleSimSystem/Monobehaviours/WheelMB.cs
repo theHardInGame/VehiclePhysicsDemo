@@ -8,7 +8,7 @@ internal sealed class WheelMB : MonoBehaviour
     [SerializeField, ReadOnly] private string id;
     [SerializeField] private Rigidbody wheelDisplace;
     [SerializeField] private Transform wheelRotate;
-    [SerializeField] private WheelCollider wheelCollider;
+    [SerializeField] private CustomWheelCollider wheelCollider;
     [SerializeField] private Rigidbody body;
     [SerializeField] private TextMeshProUGUI debugText;
     public Guid ID { get; private set; }
@@ -62,7 +62,8 @@ internal sealed class WheelMB : MonoBehaviour
 
     internal void WheelIPSRead()
     {
-        Vector3 wheelVel = wheelDisplace.transform.position - lastFramPosition;
+        Vector3 wheelVel = wheelDisplace.transform.InverseTransformDirection(wheelDisplace.transform.position - lastFramPosition);
+        debugText.text = $"Wheel vel: {wheelVel}";
         WheelIPS.contactPointVelocity = new System.Numerics.Vector3(wheelVel.x, wheelVel.y, wheelVel.z) / Time.fixedDeltaTime;
         lastFramPosition = wheelDisplace.transform.position;
 
@@ -73,7 +74,7 @@ internal sealed class WheelMB : MonoBehaviour
         Vector3 rWheel = wheelDisplace.transform.position - wheelDisplace.worldCenterOfMass;
         Vector3 rBody  = transform.position - body.worldCenterOfMass;
 
-        Vector3 vPointWheel = /*wheelDisplace.linearVelocity*/ wheelVel + Vector3.Cross(wheelDisplace.angularVelocity, rWheel);
+        Vector3 vPointWheel = wheelVel + Vector3.Cross(wheelDisplace.angularVelocity, rWheel);
         Vector3 vPointBody  = body.linearVelocity + Vector3.Cross(body.angularVelocity, rBody);
 
         WheelIPS.springRelativeVelocity = Vector3.Dot(vPointWheel - vPointBody, axis);
@@ -81,16 +82,24 @@ internal sealed class WheelMB : MonoBehaviour
         //WheelIPS.IsGrounded = wheelCollider.IsGrounded;
     }
 
-    float wheelAngle;
-    float lastAngle;
+    float rollAngle;
+    float lastRollAngle;
+
+    float steerAngle;
+    float lastSteerAngle;
 
     internal void ControllerUpdate(float dt)
     {
         WheelClamping();
         SuspensionForce();
-        LongitudinalForce();
+        TangentForces(dt);
         RotateWheel(dt);
-        //LateralForce();
+        Steer();
+    }
+
+    private void FixedUpdate()
+    {
+
     }
 
     private void Update()
@@ -98,53 +107,61 @@ internal sealed class WheelMB : MonoBehaviour
         float alpha = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
 
         float smoothAngle = Mathf.LerpAngle(
-            lastAngle,
-            wheelAngle,
+            lastRollAngle,
+            rollAngle,
             alpha
         );
 
-        lastAngle = wheelAngle;
-
         wheelRotate.localRotation = Quaternion.Euler(0f, 0f, smoothAngle);
+
+        lastRollAngle = rollAngle;
     }
 
     private void RotateWheel(float dt)
     {
-        wheelAngle -= Mathf.Rad2Deg * WheelOPS.wheelAngularVelocity * dt;
+        rollAngle -= Mathf.Rad2Deg * WheelOPS.wheelAngularVelocity * dt;
     }
 
     private void SuspensionForce()
     {
-        // Apply equal and opposite forces
         wheelDisplace.AddForce(-wheelDisplace.transform.up * WheelOPS.suspensionForce, ForceMode.Force);
         body.AddForceAtPosition(transform.up * WheelOPS.suspensionForce, transform.position, ForceMode.Force);
 
         debugText.text = $"Suspension Force: {WheelOPS.suspensionForce:F2} ";
     }
 
-    private void LateralForce()
-    {
-        // Apply lateral force at contact point
-        Vector3 lateralDirection = transform.forward; // Assuming right is the lateral direction
-        wheelDisplace.AddForce(-lateralDirection * WheelOPS.lateralForce, ForceMode.Force);
 
-        debugText.text += $"Lateral Force: {WheelOPS.lateralForce:F2}";
-    }
-
-    private void LongitudinalForce()
+    private void TangentForces(float dt)
     {
+        wheelCollider.transform.localRotation = Quaternion.Euler(0, Mathf.MoveTowards(lastSteerAngle, steerAngle, (steerAngle - lastSteerAngle) * dt), 0);
+        lastSteerAngle = steerAngle;
+        
         if (!wheelCollider.IsGrounded) return;
         
         float forwardForce = WheelOPS.forwardForce;
-        (Vector3 Loc, Vector3 Dir) = wheelCollider.GetForceLocationAndDirection(MathF.Sign(forwardForce));
+        Vector3 LongLoc = wheelCollider.GetForceLocAndDir(forwardForce, new Vector3(forwardForce, 0, 0).normalized);
+        Vector3 LongDir = wheelCollider.transform.right;
 
-        body.AddForceAtPosition(Dir * WheelOPS.forwardForce, Loc);
+        body.AddForceAtPosition(LongDir * forwardForce, LongLoc);
+        Debug.DrawRay(LongLoc, LongDir * forwardForce, Color.red);
 
-        Debug.DrawRay(Loc, Dir * forwardForce, Color.red);
+        float lateralForce = WheelOPS.lateralForce;
+        Vector3 LatLoc = wheelCollider.GetForceLocAndDir(lateralForce, new Vector3(0, 0, lateralForce).normalized);
+        Vector3 LatDir = wheelCollider.transform.forward;
+
+        body.AddForceAtPosition(LatDir * lateralForce, LatLoc);
+        Debug.DrawRay(LatLoc, LatDir * lateralForce, Color.blue);
+        
 
         debugText.text += $"Long Force: {WheelOPS.forwardForce}";
         debugText.text += $"Lat Force: {WheelOPS.lateralForce}";
     }
+
+    private void Steer()
+    {
+        steerAngle = WheelOPS.wheelSteer;
+    }
+
 
     private void WheelClamping()
     {
