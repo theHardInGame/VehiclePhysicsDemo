@@ -6,6 +6,7 @@ A comprehensive vehicle physics simulation system built for Unity, focusing on r
 
 This project implements a modular vehicle simulation system with separate concerns for drivetrain mechanics, suspension dynamics, and wheel physics. The architecture uses a component-based design with clear separation between simulation logic and Unity integration.
 
+![Demo](demo.gif)
 ## Core Systems
 
 ### Drivetrain Module
