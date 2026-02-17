@@ -1,4 +1,4 @@
-internal interface IModuleSimulationPort
+internal interface IModulePort
 {
     int GetWheelCount();
     int[] GetPoweredWheels();

@@ -2,9 +2,8 @@ using System;
 
 internal sealed class Suspension : BaseVehicleComponent<SuspensionConfig>
 {
-    public Suspension(SuspensionConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    public Suspension(SuspensionConfig config, VehicleSimulationContext vSimCtx) : base(config, vSimCtx)
     {
-        this.vIOState = null;
         lastFrameLength = config.RestLength;
     }
 

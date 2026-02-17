@@ -2,9 +2,8 @@ using System;
 
 internal sealed class Gearbox : BaseVehicleComponent<GearboxConfig>, IDrivetrainComponent, IASGearbox
 {
-    internal Gearbox(GearboxConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    internal Gearbox(GearboxConfig config, VehicleSimulationContext vSimCtx) : base(config, vSimCtx)
     {
-        this.vIOState = null;
     }
 
     private int currentGear = 0;

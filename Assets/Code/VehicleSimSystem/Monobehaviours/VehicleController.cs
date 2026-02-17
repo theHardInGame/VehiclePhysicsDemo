@@ -7,21 +7,62 @@ internal sealed class VehicleController : MonoBehaviour
 {
     [SerializeField] private MonoBehaviour vehicleInputProvider;
     [SerializeField] private VehicleConfig vehicleConfig;
-    [SerializeField] private WheelMB[] wheelMBs;
+    [SerializeField] private MonoBehaviour[] iInputComponents;
     [SerializeField] private Rigidbody body;
     [SerializeField] private TextMeshProUGUI debugText;
 
-
+    private IInputComponent[] inputComponents;
     private IVehicleInputProvider vehicleIP;
     private Vehicle vehicle;
     private VehicleSimulationContext vSimCtx;
-    private VehicleIOState vIOS;
     private SimulationPort wheelModulePort;
 
-    private Dictionary<Guid, WheelInputState> wheelInputs;
-    private Dictionary<Guid, WheelOutputState> wheelOutputs;
+    private Dictionary<Guid, ISimulationOuputPort> simOPorts;
+    private Dictionary<Guid, ISimulationInputPort> simIPorts;
+
+
+    #region Unity API
+    // ===========
+    // Unity API
+    // ===========
 
     private void Awake()
+    {
+        SetupInputs();
+        InitializeDependencies();
+        BuildVehicle();
+
+        for (int i = 0; i < inputComponents.Length; i++)
+        {
+            inputComponents[i].ControllerAwake(simIPorts);
+        }
+
+        simOPorts = null;
+        simIPorts = null;
+    }
+
+    private void FixedUpdate()
+    {
+        foreach (IInputComponent component in inputComponents) component.ControllerEarlyUpdate(Time.fixedDeltaTime);
+
+        UpdateVehicleContext();
+        vehicle.FixedUpdate(Time.fixedDeltaTime);
+
+        foreach (IInputComponent component in inputComponents) component.ControllerLateUpdate(Time.fixedDeltaTime);
+        
+        DebugUpdate();
+    }
+    #endregion
+
+    #region Controller Initializations
+    // ============================
+    // Controller Initializations
+    // ============================
+
+    /// <summary>
+    /// Sets up VehcileInputProvider
+    /// </summary>
+    private void SetupInputs()
     {
         if (vehicleInputProvider is IVehicleInputProvider vip)
         {
@@ -31,41 +72,38 @@ internal sealed class VehicleController : MonoBehaviour
         {
             Debug.LogError($"{vehicleInputProvider.name} does not inherit IVehicleInputProvider!");
         }
+    }
 
+    /// <summary>
+    /// Initializes dependencies for Vehicle
+    /// </summary>
+    private void InitializeDependencies()
+    {
+        inputComponents = new IInputComponent[iInputComponents.Length];
+        for (int i = 0; i < iInputComponents.Length; i++)
+        {
+            if (iInputComponents[i] is IInputComponent component) inputComponents[i] = component;
+            else Debug.LogError("Monobehaviour does not implement IOutputComponenet");
+        }
+        
         CreateWheelIODictionaries();
 
-        vSimCtx = new();
+        vSimCtx = new()
+        {
+            simOPorts = simOPorts
+        };
+
         body.mass = vehicleConfig.BodyMass;
-
-        vIOS = new VehicleIOState(wheelInputs, wheelOutputs, vSimCtx);
         wheelModulePort = new(vehicleConfig.Wheels.Length);
-
-        VehicleBuilder builder = new VehicleBuilder(vIOS, wheelModulePort);
-        vehicle = builder.Build(vehicleConfig);
-        vehicle.Activate();
-
-        wheelInputs = null;
-        wheelOutputs = null;
-        //vIOS = null;
     }
 
-
-    private void FixedUpdate()
-    {
-        foreach (WheelMB wheel in wheelMBs) wheel.WheelIPSRead();
-
-        UpdateVehicleContext();
-        vehicle.FixedUpdate(Time.fixedDeltaTime);
-
-        foreach (WheelMB wheel in wheelMBs) wheel.ControllerUpdate(Time.fixedDeltaTime);
-        
-        DebugUpdate();
-    }
-
+    /// <summary>
+    /// Helper for Dependency Initialization
+    /// Creates SimulationIOParameter Dictionaries
+    /// </summary>
     private void CreateWheelIODictionaries()
     {
-        
-        if (wheelMBs.Length != vehicleConfig.Wheels.Length)
+        if (inputComponents.Length / 2 != vehicleConfig.Wheels.Length)
         {
             Debug.LogError($"The amount of WheelGO and Wheels in VehicleConfig does not match. \n Disabling VehicleController... \n Name: { vehicleConfig.Name } \n ID: { vehicleConfig.ID }", this);
             
@@ -73,22 +111,42 @@ internal sealed class VehicleController : MonoBehaviour
             return;
         }
 
-        wheelInputs = new();
-        wheelOutputs = new();
+        simOPorts = new();
+        simIPorts = new();
 
-        for (int i = 0; i < wheelMBs.Length; i++)
+        for (int i = 0; i < vehicleConfig.Wheels.Length; i++)
         {
-            wheelMBs[i].ControllerAwake(vehicleConfig.Wheels[i].Suspension.WheelMass);
-
-            WheelMB wheelMB = wheelMBs[i];
-            wheelInputs.Add(wheelMB.ID, wheelMB.WheelIPS);
-            wheelOutputs.Add(wheelMB.ID, wheelMB.WheelOPS);
+            WheelConfig wheel = vehicleConfig.Wheels[i];
+            Guid ID = Guid.Parse(wheel.ID);
+            SimulationIOParamters simIOPort = new(wheel.Suspension.WheelMass);
+            simOPorts.Add(ID, simIOPort);
+            simIPorts.Add(ID, simIOPort);
         }
     }
+
+    /// <summary>
+    /// Creates and Builds Vehicle
+    /// </summary>
+    private void BuildVehicle()
+    {
+        VehicleBuilder builder = new VehicleBuilder(vSimCtx, wheelModulePort);
+        vehicle = builder.Build(vehicleConfig);
+        vehicle.Activate();
+    }
+    #endregion
+
+    #region Controller Updates
+    // ====================
+    // Controller Updates
+    // ====================
 
     private float Throttle;
     private float Brake;
     private float Steer;
+
+    /// <summary>
+    /// Reads and updates player inputs
+    /// </summary>
     private void UpdateVehicleContext()
     {
         float throttleRate = vehicleConfig.Commands.ThrottleRate * Time.fixedDeltaTime;
@@ -107,6 +165,9 @@ internal sealed class VehicleController : MonoBehaviour
         vSimCtx.SetVehicleSpeed(body.transform.InverseTransformDirection(body.linearVelocity).x);
     }
 
+    /// <summary>
+    /// Debug
+    /// </summary>
     private void DebugUpdate()
     {
         debugText.text = $"Throttle: { vSimCtx.Throttle }\n";
@@ -117,4 +178,5 @@ internal sealed class VehicleController : MonoBehaviour
         debugText.text += $"Driveshaft RPM: { vSimCtx.DriveshaftRPM }\n";
         debugText.text += $"Current Gear: { vSimCtx.CurrentGear + 1 }\n";
     }
+    #endregion
 }

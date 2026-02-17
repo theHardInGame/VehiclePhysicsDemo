@@ -1,8 +1,7 @@
 internal sealed class Clutch : BaseVehicleComponent<ClutchConfig>, IDrivetrainComponent, IASClutch
 {
-    internal Clutch(ClutchConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    internal Clutch(ClutchConfig config, VehicleSimulationContext vSimCtx) : base(config, vSimCtx)
     {
-        this.vIOState = null;
         engagementRatio = 0f;
     }
 

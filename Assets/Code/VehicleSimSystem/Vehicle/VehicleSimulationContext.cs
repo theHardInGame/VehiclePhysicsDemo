@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 internal sealed class VehicleSimulationContext
 {
     #region Input States
@@ -15,6 +18,10 @@ internal sealed class VehicleSimulationContext
     #endregion
 
 
+    #region Simulated States
+    // ==================
+    // Simulated States
+    // ==================
     internal float EngineRPM { get; private set;}
     internal void SetEngineRPM(float rpm) { EngineRPM = rpm; }
 
@@ -26,4 +33,7 @@ internal sealed class VehicleSimulationContext
 
     internal float VehicleSpeed { get; private set; }
     internal void SetVehicleSpeed(float speed) => VehicleSpeed = speed;
+    #endregion
+
+    internal Dictionary<Guid, ISimulationOuputPort> simOPorts;
 }

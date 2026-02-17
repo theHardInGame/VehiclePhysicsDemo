@@ -1,6 +1,6 @@
 using System;
 
-internal interface IWheelSimulationPort
+internal interface IWheelPort
 {
     int RegisterWheel(Guid ID, bool isPowered, bool isSteered, float radius);
 

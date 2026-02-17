@@ -1,8 +1,7 @@
 internal sealed class Differetial : BaseVehicleComponent<DifferentialConfig>
 {
-    public Differetial(DifferentialConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    public Differetial(DifferentialConfig config, VehicleSimulationContext vSimCtx) : base(config, vSimCtx)
     {
-        this.vIOState = null;
     }
 
     public float[] SplitTorque(float torqueIn, float[] RPM_w)

@@ -7,7 +7,7 @@ internal sealed class DrivetrainModule : BaseVehicleModule
 
     private readonly IDrivetrainComponent[] drivetrainComponent;
 
-    public DrivetrainModule(IModuleSimulationPort modulePort, IDrivetrainComponent[] drivetrainComponent, Differetial differetial) : base(modulePort)
+    public DrivetrainModule(IModulePort modulePort, IDrivetrainComponent[] drivetrainComponent, Differetial differetial) : base(modulePort)
     {
         this.drivetrainComponent = drivetrainComponent;
         this.differetial = differetial;

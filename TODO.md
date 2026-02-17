@@ -30,14 +30,14 @@ Ignore GameObject interaction for now. Deal with internal simulation first.
 4. [x] `11/02/2026` Decide where Brakes live and then implement.
 5. [x] `11/02/2026` Implement smooth input handling in `VehicleController`.
 
-## 11/02/2026
+> ## 11/02/2026
 1. [ ] Fix sliding/jitter on low/near zero speed.
 2. [ ] Fix infinite acceleration.
 3. [ ] Fix steer grip.
 4. [ ] Fix acceleration on steering.
 5. [ ] Implement auto shifting.
 6. [ ] Design ackerman-esque generalized steering.
-7. [ ] Clean up messy Unity-Simulation data exchange side implementations.
-8. [ ] Clean up `WheelMB` with streamlined methods.
-9. [ ] Merge `WheelMB`'s `wheelCollider` and `wheelDisplace`.
+7. [x] `17/02/2028` Clean up messy Unity-Simulation data exchange side implementations.
+8. [x] `17/02/2026` Clean up `WheelMB` with streamlined methods.
+9. [x] `17/02/2026` Merge `WheelMB`'s `wheelCollider` and `wheelDisplace`.
 

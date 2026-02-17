@@ -2,9 +2,8 @@ using System;
 
 internal sealed class Engine : BaseVehicleComponent<EngineConfig>, IDrivetrainComponent
 {
-    internal Engine(EngineConfig config, VehicleIOState vIOState) : base(config, vIOState)
+    internal Engine(EngineConfig config, VehicleSimulationContext vSimCtx) : base(config, vSimCtx)
     {
-        this.vIOState = null;
         RPM = 0;
     }
 

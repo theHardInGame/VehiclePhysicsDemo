@@ -1,6 +1,5 @@
 using UnityEngine;
 
-//[CreateAssetMenu(fileName = "ClutchConfig", menuName = "Vehicle Modules/Drivetrain/Clutch")]
 [System.Serializable]
 public sealed class ClutchConfig : BaseComponentConfig
 {
@@ -8,7 +7,7 @@ public sealed class ClutchConfig : BaseComponentConfig
     [Min(0)]
     public float AutoShiftTime;
 
-    [Tooltip("Speed of driveshaft at which clutch disengages to protect from stall")]
+    [Tooltip("RPM of engine at which clutch disengages to protect from stall")]
     [Min(0)]
     public float AutoDisengageRPM;
 }

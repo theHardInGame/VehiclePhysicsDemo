@@ -3,7 +3,7 @@ internal sealed class AutoShiftingModule : BaseVehicleModule
     private readonly IASClutch clutch;
     private readonly IASGearbox gearbox;
 
-    public AutoShiftingModule(IModuleSimulationPort modulePort, IASClutch clutch, IASGearbox gearbox) : base(modulePort)
+    public AutoShiftingModule(IModulePort modulePort, IASClutch clutch, IASGearbox gearbox) : base(modulePort)
     {
         this.clutch = clutch;
         this.gearbox = gearbox;

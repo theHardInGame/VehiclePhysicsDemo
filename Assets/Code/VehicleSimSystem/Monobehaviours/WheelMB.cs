@@ -1,106 +1,165 @@
+using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Unity.Collections;
-using TMPro;
 
-internal sealed class WheelMB : MonoBehaviour
+[RequireComponent(typeof(Collider), typeof(Rigidbody))]
+internal sealed class WheelMB : BaseInputComponent
 {
-    [SerializeField, ReadOnly] private string id;
-    [SerializeField] private Rigidbody wheelDisplace;
-    [SerializeField] private Transform wheelRotate;
-    [SerializeField] private CustomWheelCollider wheelCollider;
-    [SerializeField] private Rigidbody body;
-    [SerializeField] private TextMeshProUGUI debugText;
-    public Guid ID { get; private set; }
+    #region BaseInputComponent Implementation
+    // ===================================
+    // BaseInputComponent Implmenetation
+    // ===================================
 
-#if UNITY_EDITOR
-    private void OnValidate()
+    protected override void OnControllerAwake()
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            id = Guid.NewGuid().ToString();
-            UnityEditor.EditorUtility.SetDirty(this);
-        }
-    }
-#endif
-
-    public WheelInputState WheelIPS
-    {
-        get
-        {
-            wheelIPDNT ??= new();
-            return wheelIPDNT;
-        }
+        wheelRBD = GetComponent<Rigidbody>();
+        wheelRBD.mass = simIPort.Mass;
     }
 
-    public WheelOutputState WheelOPS
+    protected override void OnControllerEarlyUpdate(float dt)
     {
-        get
-        {
-            wheelOPDNT ??= new();
-            return wheelOPDNT;
-        }
+        ReadInput();
     }
 
-    private WheelInputState wheelIPDNT;
-    private WheelOutputState wheelOPDNT;
-
-    internal void ControllerAwake(float mass)
-    {
-        if (string.IsNullOrEmpty(id))
-        {
-            Debug.LogError("Empty Guid");
-            return;
-        }
-
-        if (Guid.TryParse(id, out Guid guid)) { ID = guid; }
-
-        wheelDisplace.mass = mass;
-    }
-
-    Vector3 lastFramPosition;
-
-    internal void WheelIPSRead()
-    {
-        Vector3 wheelVel = wheelDisplace.transform.InverseTransformDirection(wheelDisplace.transform.position - lastFramPosition);
-        debugText.text = $"Wheel vel: {wheelVel}";
-        WheelIPS.contactPointVelocity = new System.Numerics.Vector3(wheelVel.x, wheelVel.y, wheelVel.z) / Time.fixedDeltaTime;
-        lastFramPosition = wheelDisplace.transform.position;
-
-        WheelIPS.suspensionLength = (transform.position - wheelDisplace.transform.position).magnitude;
-
-        Vector3 axis = (wheelDisplace.transform.position - transform.position).normalized;
-
-        Vector3 rWheel = wheelDisplace.transform.position - wheelDisplace.worldCenterOfMass;
-        Vector3 rBody  = transform.position - body.worldCenterOfMass;
-
-        Vector3 vPointWheel = wheelVel + Vector3.Cross(wheelDisplace.angularVelocity, rWheel);
-        Vector3 vPointBody  = body.linearVelocity + Vector3.Cross(body.angularVelocity, rBody);
-
-        WheelIPS.springRelativeVelocity = Vector3.Dot(vPointWheel - vPointBody, axis);
-
-        WheelIPS.IsGrounded = wheelCollider.IsGrounded;
-    }
-
-    float rollAngle;
-    float lastRollAngle;
-
-    float steerAngle;
-    float lastSteerAngle;
-
-    internal void ControllerUpdate(float dt)
+    protected override void OnControllerLateUpdate(float dt)
     {
         WheelClamping();
+        rollAngle -= Mathf.Rad2Deg * simIPort.WheelAngularVelocity * dt;
         SuspensionForce();
-        TangentForces(dt);
-        RotateWheel(dt);
-        Steer();
+        AccelerationForce();
+        LateralForce();
+        Steer(dt);
     }
+    #endregion
 
-    private void FixedUpdate()
+    #region WheelMB Methods
+    // =================
+    // WheelMB Methods
+    // =================
+
+    private ContactPoint[] contactPoints;
+
+    [SerializeField] private Transform rotatingWheel;
+    [SerializeField] private string groundTag;
+
+    private bool isGrounded;
+    private Rigidbody wheelRBD;
+
+    private void ReadInput()
     {
-
+        simIPort.SetIsGrounded(isGrounded);
     }
+
+    /// <summary>
+    /// Applies suspension force of wheel rbd.
+    /// </summary>
+    private void SuspensionForce()
+    {
+        wheelRBD.AddForce(-transform.up * simIPort.SuspensionForce, ForceMode.Force);
+    }
+
+    /// <summary>
+    /// Applies acceleration force on vehicle rbd.
+    /// </summary>
+    private void AccelerationForce()
+    {
+        if (!isGrounded) return;
+        
+        float forwardForce = simIPort.ForwardForce;
+        Vector3 LongLoc = GetForceLocation(forwardForce, new Vector3(forwardForce, 0, 0).normalized);
+        Vector3 LongDir = transform.right;
+
+        vehicleRBD.AddForceAtPosition(LongDir * forwardForce, LongLoc);
+    }
+
+    /// <summary>
+    /// Applies lateral movement resistance on vehicle rbd.
+    /// </summary>
+    private void LateralForce()
+    {
+        if (!isGrounded) return;
+
+        float lateralForce = simIPort.LateralForce;
+        Vector3 LatLoc = GetForceLocation(lateralForce, new Vector3(0, 0, lateralForce).normalized);
+        Vector3 LatDir = transform.forward;
+
+        vehicleRBD.AddForceAtPosition(LatDir * lateralForce, LatLoc);
+    }
+
+    /// <summary>
+    /// Set current steer angle to wheel.
+    /// </summary>
+    float lastSteerAngle;
+    private void Steer(float dt)
+    {
+        float steerAngle = simIPort.WheelSteer;
+        transform.localRotation = Quaternion.Euler(0, Mathf.MoveTowards(lastSteerAngle, steerAngle, (steerAngle - lastSteerAngle) * dt), 0);
+        lastSteerAngle = steerAngle;
+    }
+
+    /// <summary>
+    /// Finds best point to apply force on (furthermost point along the force axis in contact with ground).
+    /// </summary>
+    /// <param name="forceSign">Nature of force along forceDir</param>
+    /// <param name="forceDir">Direction of force to be applied</param>
+    /// <returns>Furthermost point along the forceDir</returns>
+    private Vector3 GetForceLocation(float forceSign, Vector3 forceDir)
+    {
+        forceDir = transform.TransformDirection(forceDir);
+        ContactPoint bestPoint = contactPoints[0];
+
+        for (int i = 0; i < contactPoints.Length; i++)
+        {
+            Vector3 pt = contactPoints[i].point;
+            if (forceSign >= 0)
+            {
+                if (Vector3.Dot(pt - transform.position, forceDir) > Vector3.Dot(bestPoint.point - transform.position, forceDir)) 
+                    bestPoint = contactPoints[i];
+            }
+            else
+            {
+                if (Vector3.Dot(pt - transform.position, forceDir) > Vector3.Dot(bestPoint.point - transform.position, forceDir)) 
+                    bestPoint = contactPoints[i];
+            }
+        }
+
+        return bestPoint.point;
+    }
+
+    /// <summary>
+    /// Clamps unnecessary movements of wheel.
+    /// </summary>
+    private void WheelClamping()
+    {
+        transform.localPosition = new Vector3(0f, transform.localPosition.y, 0f);
+        transform.localRotation = Quaternion.identity;
+    }
+    #endregion
+
+    #region Unity API
+    // ===========
+    // Unity API
+    // ===========
+
+    private void OnCollisionStay(Collision collision)
+    {
+        List<ContactPoint> validPoints = new();
+
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            ContactPoint pt = collision.contacts[i];
+            if (pt.otherCollider.tag == groundTag)
+            {
+                validPoints.Add(pt);
+            }
+        }
+
+        isGrounded = validPoints.Count > 0;
+
+        contactPoints = validPoints.ToArray();
+    }
+
+    private float rollAngle;
+    private float lastRollAngle;
 
     private void Update()
     {
@@ -111,61 +170,9 @@ internal sealed class WheelMB : MonoBehaviour
             rollAngle,
             alpha
         );
-
-        wheelRotate.localRotation = Quaternion.Euler(0f, 0f, smoothAngle);
-
+        
+        rotatingWheel.localRotation = Quaternion.Euler(0f, 0f, smoothAngle);
         lastRollAngle = rollAngle;
     }
-
-    private void RotateWheel(float dt)
-    {
-        rollAngle -= Mathf.Rad2Deg * WheelOPS.wheelAngularVelocity * dt;
-    }
-
-    private void SuspensionForce()
-    {
-        wheelDisplace.AddForce(-wheelDisplace.transform.up * WheelOPS.suspensionForce, ForceMode.Force);
-        body.AddForceAtPosition(transform.up * WheelOPS.suspensionForce, transform.position, ForceMode.Force);
-
-        debugText.text = $"Suspension Force: {WheelOPS.suspensionForce:F2} ";
-    }
-
-
-    private void TangentForces(float dt)
-    {
-        wheelCollider.transform.localRotation = Quaternion.Euler(0, Mathf.MoveTowards(lastSteerAngle, steerAngle, (steerAngle - lastSteerAngle) * dt), 0);
-        lastSteerAngle = steerAngle;
-        
-        if (!wheelCollider.IsGrounded) return;
-        
-        float forwardForce = WheelOPS.forwardForce;
-        Vector3 LongLoc = wheelCollider.GetForceLocAndDir(forwardForce, new Vector3(forwardForce, 0, 0).normalized);
-        Vector3 LongDir = wheelCollider.transform.right;
-
-        body.AddForceAtPosition(LongDir * forwardForce, LongLoc);
-        //Debug.DrawRay(LongLoc, LongDir * forwardForce, Color.red);
-
-        float lateralForce = WheelOPS.lateralForce;
-        Vector3 LatLoc = wheelCollider.GetForceLocAndDir(lateralForce, new Vector3(0, 0, lateralForce).normalized);
-        Vector3 LatDir = wheelCollider.transform.forward;
-
-        body.AddForceAtPosition(LatDir * lateralForce, LatLoc);
-        //Debug.DrawRay(LatLoc, LatDir * lateralForce, Color.blue);
-        
-
-        //debugText.text += $"Long Force: {WheelOPS.forwardForce}";
-        //debugText.text += $"Lat Force: {WheelOPS.lateralForce}";
-    }
-
-    private void Steer()
-    {
-        steerAngle = WheelOPS.wheelSteer;
-    }
-
-
-    private void WheelClamping()
-    {
-        wheelDisplace.transform.localPosition = new Vector3(0f, wheelDisplace.transform.localPosition.y, 0f);
-        wheelDisplace.transform.localRotation = Quaternion.identity;
-    }
+    #endregion
 }

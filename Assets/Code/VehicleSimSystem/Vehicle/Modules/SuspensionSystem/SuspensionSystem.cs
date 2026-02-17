@@ -3,7 +3,7 @@ internal sealed class SuspensionSystem : BaseVehicleModule
     private Suspension[] suspensions;
     private readonly int suspensionCount;
 
-    public SuspensionSystem(IModuleSimulationPort modulePort, Suspension[] suspensions) : base(modulePort)
+    public SuspensionSystem(IModulePort modulePort, Suspension[] suspensions) : base(modulePort)
     {
         this.suspensions = suspensions;
         suspensionCount = modulePort.GetWheelCount();

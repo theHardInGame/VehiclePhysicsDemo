@@ -1,8 +1,8 @@
 internal abstract class BaseVehicleModule : IVehicleModule
 {
-    protected IModuleSimulationPort moduleSimPort;
+    protected IModulePort moduleSimPort;
     protected bool isActive = false;
-    public BaseVehicleModule(IModuleSimulationPort modulePort)
+    public BaseVehicleModule(IModulePort modulePort)
     {
         this.moduleSimPort = modulePort;
     }

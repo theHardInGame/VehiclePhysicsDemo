@@ -218,32 +218,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 54062997}
-  - component: {fileID: 54062996}
+  - component: {fileID: 54062998}
   m_Layer: 7
-  m_Name: FL
+  m_Name: FL_SuspensionJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &54062996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 54062995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c07382c2b65b61cd88bca8c9d3a2d513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VehicleSimulationSystem::WheelMB
-  id: 16cc301c-e893-4bf7-a61a-718491c9c735
-  wheelDisplace: {fileID: 935969346}
-  wheelRotate: {fileID: 527904667}
-  wheelCollider: {fileID: 935969347}
-  body: {fileID: 276605582}
-  debugText: {fileID: 436764557}
 --- !u!4 &54062997
 Transform:
   m_ObjectHideFlags: 0
@@ -260,6 +242,23 @@ Transform:
   - {fileID: 935969344}
   m_Father: {fileID: 276605586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &54062998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54062995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615f330149aee6340aa269c75f0e839e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VehicleSimulationSystem::SuspensionMB
+  iD: bbf445fa-65df-4d9d-a062-f630000e2b73
+  vehicleRBD: {fileID: 276605582}
+  suspensionJoint: {fileID: 54062997}
+  wheelJoint: {fileID: 935969344}
+  wheelRBD: {fileID: 935969346}
 --- !u!1 &219059209
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,11 +557,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: VehicleSimulationSystem::VehicleController
   vehicleInputProvider: {fileID: 276605587}
   vehicleConfig: {fileID: 11400000, guid: a7c6981801351702c845b8320ebb3ca3, type: 2}
-  wheelMBs:
-  - {fileID: 54062996}
-  - {fileID: 428455935}
-  - {fileID: 301250108}
-  - {fileID: 1947576490}
+  iInputComponents:
+  - {fileID: 428455937}
+  - {fileID: 1073749947}
+  - {fileID: 1947576492}
+  - {fileID: 1918135872}
+  - {fileID: 301250110}
+  - {fileID: 1688819948}
+  - {fileID: 54062998}
+  - {fileID: 935969347}
   body: {fileID: 276605582}
   debugText: {fileID: 400317981}
 --- !u!54 &276605582
@@ -749,32 +752,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 301250109}
-  - component: {fileID: 301250108}
+  - component: {fileID: 301250110}
   m_Layer: 7
-  m_Name: FR
+  m_Name: FR_SuspensionJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &301250108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301250107}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c07382c2b65b61cd88bca8c9d3a2d513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VehicleSimulationSystem::WheelMB
-  id: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
-  wheelDisplace: {fileID: 1688819946}
-  wheelRotate: {fileID: 805804513}
-  wheelCollider: {fileID: 1688819948}
-  body: {fileID: 276605582}
-  debugText: {fileID: 671575237}
 --- !u!4 &301250109
 Transform:
   m_ObjectHideFlags: 0
@@ -791,6 +776,23 @@ Transform:
   - {fileID: 1688819945}
   m_Father: {fileID: 276605586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &301250110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301250107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615f330149aee6340aa269c75f0e839e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VehicleSimulationSystem::SuspensionMB
+  iD: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
+  vehicleRBD: {fileID: 276605582}
+  suspensionJoint: {fileID: 301250109}
+  wheelJoint: {fileID: 1688819945}
+  wheelRBD: {fileID: 1688819946}
 --- !u!1 &400317979
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,32 +939,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 428455936}
-  - component: {fileID: 428455935}
+  - component: {fileID: 428455937}
   m_Layer: 7
-  m_Name: BL
+  m_Name: BL_SuspensionJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &428455935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428455934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c07382c2b65b61cd88bca8c9d3a2d513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VehicleSimulationSystem::WheelMB
-  id: 57af3d8d-1664-4d45-b1e7-d7200cb55d53
-  wheelDisplace: {fileID: 1073749946}
-  wheelRotate: {fileID: 1237221477}
-  wheelCollider: {fileID: 1073749947}
-  body: {fileID: 276605582}
-  debugText: {fileID: 2116582131}
 --- !u!4 &428455936
 Transform:
   m_ObjectHideFlags: 0
@@ -979,6 +963,23 @@ Transform:
   - {fileID: 1073749944}
   m_Father: {fileID: 276605586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &428455937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428455934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615f330149aee6340aa269c75f0e839e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VehicleSimulationSystem::SuspensionMB
+  iD: 57af3d8d-1664-4d45-b1e7-d7200cb55d53
+  vehicleRBD: {fileID: 276605582}
+  suspensionJoint: {fileID: 428455936}
+  wheelJoint: {fileID: 1073749944}
+  wheelRBD: {fileID: 1073749946}
 --- !u!1 &436764555
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,7 +1889,7 @@ GameObject:
   - component: {fileID: 935969345}
   - component: {fileID: 935969347}
   m_Layer: 7
-  m_Name: WheelGO
+  m_Name: FL_WheelJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1971,6 +1972,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870731819dca68536931571bb232483d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: VehicleSimulationSystem::WheelCollider
+  iD: bbf445fa-65df-4d9d-a062-f630000e2b73
+  vehicleRBD: {fileID: 276605582}
+  rotatingWheel: {fileID: 527904667}
   groundTag: Ground
 --- !u!1 &1014297764
 GameObject:
@@ -2075,7 +2079,7 @@ GameObject:
   - component: {fileID: 1073749945}
   - component: {fileID: 1073749947}
   m_Layer: 7
-  m_Name: WheelGO
+  m_Name: BL_WheelJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2158,6 +2162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870731819dca68536931571bb232483d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: VehicleSimulationSystem::WheelCollider
+  iD: 57af3d8d-1664-4d45-b1e7-d7200cb55d53
+  vehicleRBD: {fileID: 276605582}
+  rotatingWheel: {fileID: 1237221477}
   groundTag: Ground
 --- !u!1 &1124443620
 GameObject:
@@ -2996,7 +3003,7 @@ GameObject:
   - component: {fileID: 1688819946}
   - component: {fileID: 1688819948}
   m_Layer: 7
-  m_Name: WheelGO
+  m_Name: FR_WheelJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3079,6 +3086,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870731819dca68536931571bb232483d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: VehicleSimulationSystem::WheelCollider
+  iD: 0e9c4cb0-415f-43da-96f6-4850c114b4a4
+  vehicleRBD: {fileID: 276605582}
+  rotatingWheel: {fileID: 805804513}
   groundTag: Ground
 --- !u!1 &1846711363
 GameObject:
@@ -3183,7 +3193,7 @@ GameObject:
   - component: {fileID: 1918135870}
   - component: {fileID: 1918135872}
   m_Layer: 7
-  m_Name: WheelGO
+  m_Name: BR_WheelJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3266,6 +3276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870731819dca68536931571bb232483d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: VehicleSimulationSystem::WheelCollider
+  iD: 4717ff00-585a-4e12-a2fc-c36c95d49f74
+  vehicleRBD: {fileID: 276605582}
+  rotatingWheel: {fileID: 1305757403}
   groundTag: Ground
 --- !u!1 &1947576489
 GameObject:
@@ -3276,32 +3289,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1947576491}
-  - component: {fileID: 1947576490}
+  - component: {fileID: 1947576492}
   m_Layer: 7
-  m_Name: BR
+  m_Name: BR_SuspensionJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1947576490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1947576489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c07382c2b65b61cd88bca8c9d3a2d513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: VehicleSimulationSystem::WheelMB
-  id: 4717ff00-585a-4e12-a2fc-c36c95d49f74
-  wheelDisplace: {fileID: 1918135871}
-  wheelRotate: {fileID: 1305757403}
-  wheelCollider: {fileID: 1918135872}
-  body: {fileID: 276605582}
-  debugText: {fileID: 271443063}
 --- !u!4 &1947576491
 Transform:
   m_ObjectHideFlags: 0
@@ -3318,6 +3313,23 @@ Transform:
   - {fileID: 1918135869}
   m_Father: {fileID: 276605586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1947576492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947576489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615f330149aee6340aa269c75f0e839e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VehicleSimulationSystem::SuspensionMB
+  iD: 4717ff00-585a-4e12-a2fc-c36c95d49f74
+  vehicleRBD: {fileID: 276605582}
+  suspensionJoint: {fileID: 1947576491}
+  wheelJoint: {fileID: 1918135869}
+  wheelRBD: {fileID: 1918135871}
 --- !u!1 &2010397040
 GameObject:
   m_ObjectHideFlags: 0

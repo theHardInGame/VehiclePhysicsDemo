@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-internal sealed class SimulationPort : IModuleSimulationPort, IWheelSimulationPort
+internal sealed class SimulationPort : IModulePort, IWheelPort
 {
     private WheelSimulationParamters[] wheels;
     private List<WheelSimulationParamters> wheelList = new();
