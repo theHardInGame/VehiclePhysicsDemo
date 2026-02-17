@@ -128,4 +128,4 @@ Vehicle behavior is defined through ScriptableObject configs:
 
 ## Status
 
-See `TODO.md` for current development progress and planned features.
+See [TODO](TODO.md) for current development progress and planned features.
